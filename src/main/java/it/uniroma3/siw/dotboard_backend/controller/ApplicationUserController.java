@@ -15,44 +15,33 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class ApplicationUserController {
 
     @Autowired
     ApplicationUserRepository applicationUserRepository;
 
-    @RequestMapping(value="/users", method=RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<ApplicationUser> getAll() {
         return applicationUserRepository.findAll();
     }
 
-    @RequestMapping(value="/users/{userId}", method=RequestMethod.GET)
+    @RequestMapping(value = "{userId}", method = RequestMethod.GET)
     public ApplicationUser getOne(@PathVariable("userId") Long userId) {
-        if (userId == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST
-            );
-        }
-        ApplicationUser user = applicationUserRepository.findById(userId).orElse(null);
-        if(user == null){
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "entity not found"
-            );
-        }
-        return user;
+        return this.applicationUserRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @RequestMapping(value="/users", method=RequestMethod.POST)
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     public ApplicationUser create(ApplicationUser user) {
         return applicationUserRepository.save(user);
     }
 
-    @RequestMapping(value="/users", method=RequestMethod.PUT)
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ApplicationUser update(ApplicationUser user) {
         return applicationUserRepository.save(user);
     }
 
-    @RequestMapping(value="/users", method=RequestMethod.DELETE)
+    @RequestMapping(value = "/", method = RequestMethod.DELETE)
     public void delete(ApplicationUser user) {
         applicationUserRepository.delete(user);
     }
