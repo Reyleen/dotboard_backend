@@ -9,5 +9,4 @@ public class DotboardBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(DotboardBackendApplication.class, args);
     }
-
 }
