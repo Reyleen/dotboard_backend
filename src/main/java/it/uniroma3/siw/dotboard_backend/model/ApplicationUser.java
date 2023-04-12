@@ -120,3 +120,4 @@ public class ApplicationUser {
         this.deleted_at = deleted_at;
     }
 }
+
