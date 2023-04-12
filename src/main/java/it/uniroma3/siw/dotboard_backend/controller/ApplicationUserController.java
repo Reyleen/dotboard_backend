@@ -1,21 +1,18 @@
 package it.uniroma3.siw.dotboard_backend.controller;
 
-import java.util.List;
-import java.util.Optional;
-
+import io.swagger.annotations.Api;
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
+@Api(tags = "Application User")
 public class ApplicationUserController {
 
     @Autowired
@@ -26,24 +23,36 @@ public class ApplicationUserController {
         return applicationUserRepository.findAll();
     }
 
-    @RequestMapping(value = "{userId}", method = RequestMethod.GET)
-    public ApplicationUser getOne(@PathVariable("userId") Long userId) {
-        return this.applicationUserRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public ApplicationUser getOne(@PathVariable("id") Long id) {
+        return this.applicationUserRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ApplicationUser create(ApplicationUser user) {
+    public ApplicationUser create(@RequestBody ApplicationUser user) {
         return applicationUserRepository.save(user);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public ApplicationUser update(ApplicationUser user) {
-        return applicationUserRepository.save(user);
+    public ApplicationUser update(@PathVariable("id") Long id, @RequestBody ApplicationUser user) {
+
+        // TODO: check if user exists - modify all fields in one go
+        return applicationUserRepository.findById(id).map(u -> {
+            u.setName(user.getName());
+            u.setSurname(user.getSurname());
+            u.setEmail(user.getEmail());
+            u.setPasswordHash(user.getPasswordHash());
+            u.setBirthDate(user.getBirthDate());
+            u.setCreated_at(user.getCreated_at());
+            u.setVersion(user.getVersion());
+            u.setUpdated_at(user.getUpdated_at());
+            u.setDeleted_at(user.getDeleted_at());
+            return applicationUserRepository.save(u);
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.DELETE)
-    public void delete(ApplicationUser user) {
-        applicationUserRepository.delete(user);
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable("id") Long id) {
+        applicationUserRepository.deleteById(id);
     }
-
 }

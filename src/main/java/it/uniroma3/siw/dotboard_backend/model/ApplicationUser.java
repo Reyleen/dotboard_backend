@@ -2,7 +2,6 @@ package it.uniroma3.siw.dotboard_backend.model;
 
 import org.springframework.lang.Nullable;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
