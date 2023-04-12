@@ -1,7 +1,12 @@
 package it.uniroma3.siw.dotboard_backend.model;
 
-import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
+import org.springframework.lang.Nullable;
+
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import java.util.Date;
 import java.util.Objects;
@@ -9,7 +14,8 @@ import java.util.Objects;
 @Entity
 public class ApplicationUser {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     @Nullable
