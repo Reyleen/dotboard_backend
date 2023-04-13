@@ -6,6 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+
 
 import java.util.Date;
 import java.util.Objects;
@@ -16,12 +21,14 @@ public class ApplicationUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotBlank
     private String name;
     @Nullable
     private String surname;
-    private String email;
-    private String passwordHash;
-    @Nullable private Date birthDate;
+    @Email String email;
+    @NotNull String passwordHash;
+    @Past Date birthDate;
     private Date created_at;
     private Integer version;
     @Nullable private Date updated_at;

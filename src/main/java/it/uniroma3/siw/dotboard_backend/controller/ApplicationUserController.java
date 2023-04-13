@@ -16,7 +16,8 @@ import java.util.List;
 public class ApplicationUserController {
 
     @Autowired
-    ApplicationUserRepository applicationUserRepository;
+    private ApplicationUserRepository applicationUserRepository;
+
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<ApplicationUser> getAll() {
