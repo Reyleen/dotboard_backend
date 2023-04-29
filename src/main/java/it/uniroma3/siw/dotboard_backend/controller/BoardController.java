@@ -32,7 +32,7 @@ public class BoardController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Board update(@PathVariable("id") Long id, @RequestBody Board board) {
-        return boardRepository.update(id, board); //new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return boardRepository.update(id, board); 
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)

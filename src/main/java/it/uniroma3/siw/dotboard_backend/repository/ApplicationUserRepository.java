@@ -58,7 +58,7 @@ public abstract class ApplicationUserRepository implements BaseRepository {
     }
 
     public void deleteById(Long idUser){
-        this.em.createQuery("delete from "+this.domainClass.getName()+"where id=idUser").executeUpdate();
+        this.em.createQuery("delete from "+this.domainClass.getName()+" where id="+idUser).executeUpdate();
     }
 
     public ApplicationUser update(Long id, ApplicationUser u){

@@ -1,5 +1,4 @@
 package it.uniroma3.siw.dotboard_backend.repository;
-import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 
 import javax.persistence.EntityManager;
 import java.util.List;

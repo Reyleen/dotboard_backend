@@ -20,11 +20,11 @@ public abstract class BoardRepository implements BaseRepository {
         this.em = em;
     }
     public List<Board> findAll() {
-        return em.createQuery("select b from Board b",Board.class).getResultList();
+        return em.createQuery("select b from Board b",this.domainClass).getResultList();
     }
 
     public Board findById(Long id) {
-        return em.find(Board.class, id);
+        return em.find(this.domainClass, id);
     }
 
     public Board save(Board board) {
@@ -60,8 +60,8 @@ public abstract class BoardRepository implements BaseRepository {
         return save(n);
     }
 
-    public void deleteById(Long idUser){
-        this.em.createQuery("delete from "+this.domainClass.getName()+"where id=idUser").executeUpdate();
+    public void deleteById(Long idB){
+        this.em.createQuery("delete from "+this.domainClass.getName()+"where id="+idB).executeUpdate();
     }
 
 }

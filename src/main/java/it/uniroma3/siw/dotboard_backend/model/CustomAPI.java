@@ -11,7 +11,6 @@ public class CustomAPI {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
     public void setId(Long id) {
         this.id = id;
     }
