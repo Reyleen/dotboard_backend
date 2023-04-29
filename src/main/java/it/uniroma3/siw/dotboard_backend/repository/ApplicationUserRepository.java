@@ -9,9 +9,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 @Repository
-public class ApplicationUserRepository {
-    EntityManager em = null;
-    Class<ApplicationUser> domainClass = null;
+public abstract class ApplicationUserRepository implements BaseRepository {
+    EntityManager em;
+    Class<ApplicationUser> domainClass;
 
     public ApplicationUserRepository(Class<ApplicationUser> domainClass){
         this.domainClass=domainClass;
@@ -20,15 +20,17 @@ public class ApplicationUserRepository {
     public void setEntityManager(EntityManager em){
         this.em = em;
     }
+
+
     public List<ApplicationUser> findAll() {
-        return em.createQuery("select u from ApplicationUser u",ApplicationUser.class).getResultList();
+        return em.createQuery("select o from "+this.domainClass.getName()+"o",this.domainClass).getResultList();
     }
 
     public ApplicationUser findById(Long id) {
-        return em.find(ApplicationUser.class, id);
+        return em.find(this.domainClass, id);
     }
 
-    public ApplicationUser save(ApplicationUser user) {
+    public ApplicationUser save(ApplicationUser entity) {
         Method getId = null;
         ApplicationUser p = null;
         try {
@@ -37,12 +39,12 @@ public class ApplicationUserRepository {
             e.printStackTrace();
         }
         try{
-            if(getId.invoke(user)==null) {
-                this.em.persist(user);
-                p=user;
+            if(getId.invoke(entity)==null) {
+                this.em.persist(entity);
+                p=entity;
             }
             else{
-                p=em.merge(user);
+                p=em.merge(entity);
             }
         }
         catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e){
@@ -59,7 +61,7 @@ public class ApplicationUserRepository {
         this.em.createQuery("delete from "+this.domainClass.getName()+"where id=idUser").executeUpdate();
     }
 
-    public ApplicationUser updateUser(Long id, ApplicationUser u){
+    public ApplicationUser update(Long id, ApplicationUser u){
         ApplicationUser n = findById(id);
         n.setName(u.getName());
         n.setSurname(u.getSurname());

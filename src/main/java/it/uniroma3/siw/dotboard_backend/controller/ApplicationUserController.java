@@ -37,7 +37,7 @@ public class ApplicationUserController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ApplicationUser update(@PathVariable("id") Long id, @RequestBody ApplicationUser user) {
-            return applicationUserRepository.updateUser(id, user); //new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return applicationUserRepository.update(id, user); //new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
