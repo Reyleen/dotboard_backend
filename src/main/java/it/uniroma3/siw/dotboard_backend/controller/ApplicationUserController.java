@@ -27,7 +27,7 @@ public class ApplicationUserController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ApplicationUser getOne(@PathVariable("id") Long id) {
-        return this.applicationUserRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return this.applicationUserRepository.findById(id);//orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -37,20 +37,7 @@ public class ApplicationUserController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ApplicationUser update(@PathVariable("id") Long id, @RequestBody ApplicationUser user) {
-
-        // TODO: check if user exists - modify all fields in one go
-        return applicationUserRepository.findById(id).map(u -> {
-            u.setName(user.getName());
-            u.setSurname(user.getSurname());
-            u.setEmail(user.getEmail());
-            u.setPasswordHash(user.getPasswordHash());
-            u.setBirthDate(user.getBirthDate());
-            u.setCreated_at(user.getCreated_at());
-            u.setVersion(user.getVersion());
-            u.setUpdated_at(user.getUpdated_at());
-            u.setDeleted_at(user.getDeleted_at());
-            return applicationUserRepository.save(u);
-        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            return applicationUserRepository.updateUser(id, user); //new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
