@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 @Repository
-public abstract class BoardRepository implements BaseRepository {
+public class BoardRepository implements BaseRepository <Board>{
     EntityManager em;
     Class <Board> domainClass;
 

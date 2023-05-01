@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 @Repository
-public abstract class ApplicationUserRepository implements BaseRepository {
+public class ApplicationUserRepository implements BaseRepository <ApplicationUser>{
     EntityManager em;
     Class<ApplicationUser> domainClass;
 
@@ -53,9 +53,6 @@ public abstract class ApplicationUserRepository implements BaseRepository {
         return p;
     }
 
-    public void delete (ApplicationUser u){
-        this.em.remove(u);
-    }
 
     public void deleteById(Long idUser){
         this.em.createQuery("delete from "+this.domainClass.getName()+" where id="+idUser).executeUpdate();

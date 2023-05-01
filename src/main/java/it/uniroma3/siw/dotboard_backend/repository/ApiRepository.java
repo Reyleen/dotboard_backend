@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 @Repository
-public abstract class ApiRepository implements BaseRepository {
+public class ApiRepository implements BaseRepository<ApiClass> {
     EntityManager em;
     Class <ApiClass> domainClass;
     public void setEntityManager(EntityManager em) {
