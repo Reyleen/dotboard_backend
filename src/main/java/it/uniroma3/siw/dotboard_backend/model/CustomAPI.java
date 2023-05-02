@@ -6,7 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
+import java.lang.reflect.Method;
 import java.util.Date;
 
 @Entity
@@ -14,6 +16,8 @@ public class CustomAPI {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotBlank String  ref; // ??
+    Method method; // ???
     @PastOrPresent Date created_at;
     private Integer version;
     @Nullable
@@ -59,5 +63,21 @@ public class CustomAPI {
 
     public Long getId() {
         return id;
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
+    public void setRef(String ref) {
+        this.ref = ref;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
     }
 }
