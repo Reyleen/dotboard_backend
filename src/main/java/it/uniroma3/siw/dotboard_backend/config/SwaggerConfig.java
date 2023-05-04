@@ -26,9 +26,9 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Dotboard API's")
-                .description("API's endpoints for Dotboard services")
-                .version("1.0.0")
+                .title("Dotboard APIs")
+                .description("API endpoints for Dotboard services")
+                .version("0.0.6")
                 .build();
     }
 }
