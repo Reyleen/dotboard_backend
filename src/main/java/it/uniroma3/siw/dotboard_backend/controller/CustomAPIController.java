@@ -1,7 +1,6 @@
 package it.uniroma3.siw.dotboard_backend.controller;
 
 import io.swagger.annotations.Api;
-import it.uniroma3.siw.dotboard_backend.model.ApiClass;
 import it.uniroma3.siw.dotboard_backend.model.CustomAPI;
 import it.uniroma3.siw.dotboard_backend.repository.CustomAPIRepository;
 import org.springframework.stereotype.Controller;

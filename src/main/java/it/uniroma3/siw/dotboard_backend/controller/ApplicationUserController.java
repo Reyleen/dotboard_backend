@@ -26,7 +26,7 @@ public class ApplicationUserController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ApplicationUser getOne(@PathVariable("id") Long id) {
-        return this.applicationUserRepository.findById(id);//orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return this.applicationUserRepository.findById(id); //|| throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -36,7 +36,7 @@ public class ApplicationUserController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public ApplicationUser update(@PathVariable("id") Long id, @RequestBody ApplicationUser user) {
-            return applicationUserRepository.update(id, user); //new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return applicationUserRepository.update(id, user); //|| throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
