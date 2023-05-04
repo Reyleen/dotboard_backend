@@ -1,15 +1,12 @@
 package it.uniroma3.siw.dotboard_backend.model;
 
-import org.hibernate.annotations.CreationTimestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
-
-
 import java.util.Date;
 import java.util.Objects;
 
@@ -21,6 +18,7 @@ public class ApplicationUser extends BaseModel {
     @Nullable
     private String surname;
     @Email String email;
+    @JsonIgnore
     String passwordHash;
     @Past Date birthDate;
 
@@ -71,16 +69,16 @@ public class ApplicationUser extends BaseModel {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(getId());
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ApplicationUser user = (ApplicationUser) o;
         return getId().equals(user.getId());
     }
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
 }
 
