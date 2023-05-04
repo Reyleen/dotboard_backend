@@ -1,5 +1,6 @@
 package it.uniroma3.siw.dotboard_backend.model;
 
+import it.uniroma3.siw.dotboard_backend.utils.HTTPMethod;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -8,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
-import java.lang.reflect.Method;
 import java.util.Date;
 
 @Entity
@@ -17,7 +17,7 @@ public class CustomAPI {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotBlank String  ref; // ??
-    Method method; // ???
+    HTTPMethod method; // ???
     @PastOrPresent Date created_at;
     private Integer version;
     @Nullable
@@ -73,11 +73,11 @@ public class CustomAPI {
         this.ref = ref;
     }
 
-    public Method getMethod() {
+    public HTTPMethod getMethod() {
         return method;
     }
 
-    public void setMethod(Method method) {
+    public void setMethod(HTTPMethod method) {
         this.method = method;
     }
 }

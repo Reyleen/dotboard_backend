@@ -3,6 +3,7 @@ package it.uniroma3.siw.dotboard_backend.controller;
 import io.swagger.annotations.Api;
 import it.uniroma3.siw.dotboard_backend.model.ApiClass;
 import it.uniroma3.siw.dotboard_backend.repository.ApiRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api")
 @Api(tags = "Api")
 public class ApiController {
-
+    @Autowired
     ApiRepository apiRepository;
 
     @RequestMapping (value="/", method= RequestMethod.GET )

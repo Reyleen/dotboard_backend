@@ -1,5 +1,6 @@
 package it.uniroma3.siw.dotboard_backend.model;
 
+import it.uniroma3.siw.dotboard_backend.utils.HTTPMethod;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
@@ -17,11 +18,12 @@ public class ApiClass {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     @NotBlank String ref;
-    Method method;
+    HTTPMethod method;
     @PastOrPresent Date created_at;
     private Integer version;
     @Nullable private Date updated_at;
     @Nullable private Date deleted_at;
+
     public Date getCreated_at() {
         return created_at;
     }
@@ -72,11 +74,11 @@ public class ApiClass {
         this.ref = ref;
     }
 
-    public Method getMethod() {
+    public HTTPMethod getMethod() {
         return method;
     }
 
-    public void setMethod(Method method) {
+    public void setMethod(HTTPMethod method) {
         this.method = method;
     }
 

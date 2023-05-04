@@ -3,6 +3,7 @@ package it.uniroma3.siw.dotboard_backend.controller;
 import io.swagger.annotations.Api;
 import it.uniroma3.siw.dotboard_backend.model.CustomAPI;
 import it.uniroma3.siw.dotboard_backend.repository.CustomAPIRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import java.util.List;
 @Api(tags="CustomApi")
 @RequestMapping("/custom")
 public class CustomAPIController {
+    @Autowired
     CustomAPIRepository customAPIRepository;
 
     @RequestMapping (value="/", method= RequestMethod.GET )
