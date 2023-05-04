@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +16,9 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
 
   Sanitizer<ApplicationUser> sanitizer = new Sanitizer<>();
 
-  Optional<ApplicationUser> findByEmail(String email);
+  Optional<ApplicationUser> findByEmailAndDeletedAtIsNull(String email);
+
+  Optional<ApplicationUser> findByIdAndDeletedAtIsNull(Long id);
 
   List<ApplicationUser> findByDeletedAtIsNull();
 
@@ -25,7 +26,7 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
 
 
     // Check if user already exists
-    ApplicationUser user = this.findByEmail(applicationUser.getEmail()).orElse(null);
+    ApplicationUser user = this.findByEmailAndDeletedAtIsNull(applicationUser.getEmail()).orElse(null);
     if (user != null) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
     }
@@ -33,10 +34,9 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
     // Sanitize input data
     ApplicationUser safeApplicationUser = sanitizer.sanitize(applicationUser);
 
-    System.out.println(safeApplicationUser);
     // Save user
     this.save(safeApplicationUser);
-    return this.findByEmail(safeApplicationUser.getEmail())
+    return this.findByEmailAndDeletedAtIsNull(safeApplicationUser.getEmail())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
   }
 
