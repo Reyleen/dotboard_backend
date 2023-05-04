@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -54,8 +55,10 @@ public class ApplicationUserRepository implements BaseRepository <ApplicationUse
     }
 
 
-    public void deleteById(Long idUser){
-        this.em.createQuery("delete from "+this.domainClass.getName()+"a WHERE a.id= :idUser").executeUpdate(); //Where id=?
+    public void delete(Long id){
+        ApplicationUser u=findById(id);
+        Date dt = new Date();
+        u.setDeleted_at(dt);
     }
 
     public ApplicationUser update(Long id, ApplicationUser u){

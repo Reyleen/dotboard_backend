@@ -8,6 +8,6 @@ public interface BaseRepository<Object> {
     public Object save (Object entity);
     public List<Object> findAll();
     public Object findById(Long id);
-    public void deleteById(Long id);
+    public void delete(Long id);
     public Object update(Long Id, Object t);
 }

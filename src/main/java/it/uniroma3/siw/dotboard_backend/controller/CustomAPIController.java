@@ -39,7 +39,7 @@ public class CustomAPIController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id) {
-        customAPIRepository.deleteById(id);
+        customAPIRepository.delete(id);
     }
 
 }

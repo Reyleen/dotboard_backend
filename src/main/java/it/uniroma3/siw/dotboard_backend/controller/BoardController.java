@@ -37,6 +37,6 @@ public class BoardController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id) {
-        boardRepository.deleteById(id);
+        boardRepository.delete(id);
     }
 }

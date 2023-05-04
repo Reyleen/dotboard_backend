@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -48,8 +49,10 @@ public class CustomAPIRepository implements BaseRepository<CustomAPI> {
         return  em.find(this.domainClass,id);
     }
 
-    public void deleteById(Long id) {
-        this.em.createQuery("delete from "+this.domainClass.getName()+" where id="+id).executeUpdate();
+    public void delete(Long id) {
+        CustomAPI api= findById(id);
+        Date dt = new Date();
+        api.setDeleted_at(dt);
     }
 
     public CustomAPI update(Long Id, CustomAPI t) {

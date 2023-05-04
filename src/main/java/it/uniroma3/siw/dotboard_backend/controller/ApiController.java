@@ -40,7 +40,7 @@ public class ApiController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id) {
-        apiRepository.deleteById(id);
+        apiRepository.delete(id);
     }
 
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -60,8 +61,10 @@ public class BoardRepository implements BaseRepository <Board>{
         return save(n);
     }
 
-    public void deleteById(Long idB){
-        this.em.createQuery("delete from "+this.domainClass.getName()+"where id="+idB).executeUpdate();
+    public void delete(Long id){
+        Board board=findById(id);
+        Date dt = new Date();
+        board.setDeleted_at(dt);
     }
 
 }

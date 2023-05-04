@@ -6,14 +6,16 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public class ApiRepository implements BaseRepository<ApiClass> {
     EntityManager em;
-    Class <ApiClass> domainClass;
+    Class<ApiClass> domainClass;
+
     public void setEntityManager(EntityManager em) {
-        this.em=em;
+        this.em = em;
     }
 
     public ApiClass save(ApiClass entity) {
@@ -38,19 +40,17 @@ public class ApiRepository implements BaseRepository<ApiClass> {
     }
 
     public List<ApiClass> findAll() {
-        return em.createQuery("select a from ApiClass a",this.domainClass).getResultList();
+        return em.createQuery("select a from ApiClass a", this.domainClass).getResultList();
     }
 
-    public ApiClass findById (Long id) {
-        return  em.find(this.domainClass,id);
+    public ApiClass findById(Long id) {
+        return em.find(this.domainClass, id);
     }
 
-    public void delete(ApiClass o) {
-        em.remove(o);
-    }
-
-    public void deleteById(Long idA) {
-        this.em.createQuery("delete from "+this.domainClass.getName()+"where id="+idA).executeUpdate();
+    public void delete(Long id) {
+        ApiClass o=findById(id);
+        Date dt = new Date();
+        o.setDeleted_at(dt);
     }
 
     public ApiClass update(Long id, ApiClass o) {

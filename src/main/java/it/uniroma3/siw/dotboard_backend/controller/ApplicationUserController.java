@@ -41,6 +41,6 @@ public class ApplicationUserController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id) {
-        applicationUserRepository.deleteById(id);
+        applicationUserRepository.delete(id);
     }
 }
