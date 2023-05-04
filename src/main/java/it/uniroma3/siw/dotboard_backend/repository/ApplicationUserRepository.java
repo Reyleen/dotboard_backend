@@ -1,79 +1,59 @@
 package it.uniroma3.siw.dotboard_backend.repository;
 
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
+import it.uniroma3.siw.dotboard_backend.services.Sanitizer;
+import it.uniroma3.siw.dotboard_backend.utils.MergeUpdate;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.EntityManager;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Date;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class ApplicationUserRepository implements BaseRepository <ApplicationUser>{
-    EntityManager em;
-    Class<ApplicationUser> domainClass;
+public interface ApplicationUserRepository extends JpaRepository<ApplicationUser, Long>, MergeUpdate {
 
-    public ApplicationUserRepository(Class<ApplicationUser> domainClass){
-        this.domainClass=domainClass;
+  Sanitizer<ApplicationUser> sanitizer = new Sanitizer<>();
+
+  Optional<ApplicationUser> findByEmail(String email);
+
+  List<ApplicationUser> findByDeletedAtIsNull();
+
+  default ApplicationUser create(ApplicationUser applicationUser) throws IllegalAccessException {
+
+
+    // Check if user already exists
+    ApplicationUser user = this.findByEmail(applicationUser.getEmail()).orElse(null);
+    if (user != null) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
     }
 
-    public void setEntityManager(EntityManager em){
-        this.em = em;
-    }
+    // Sanitize input data
+    ApplicationUser safeApplicationUser = sanitizer.sanitize(applicationUser);
 
+    System.out.println(safeApplicationUser);
+    // Save user
+    this.save(safeApplicationUser);
+    return this.findByEmail(safeApplicationUser.getEmail())
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
+  }
 
-    public List<ApplicationUser> findAll() {
-        return em.createQuery("select o from "+this.domainClass.getName()+"o",this.domainClass).getResultList();
-    }
+  default ApplicationUser update(Long id, ApplicationUser applicationUser) throws IllegalAccessException {
+    // Check if user exists
+    ApplicationUser newApplicationUser = this.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-    public ApplicationUser findById(Long id) {
-        return em.find(this.domainClass, id);
-    }
+    // Sanitize input data
+    ApplicationUser safeApplicationUser = sanitizer.sanitize(applicationUser);
 
-    public ApplicationUser save(ApplicationUser entity) {
-        Method getId = null;
-        ApplicationUser p = null;
-        try {
-            getId = this.domainClass.getMethod("getId");
-        } catch (NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
-        }
-        try{
-            if(getId.invoke(entity)==null) {
-                this.em.persist(entity);
-                p=entity;
-            }
-            else{
-                p=em.merge(entity);
-            }
-        }
-        catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e){
-            e.printStackTrace();
-        }
-        return p;
-    }
+    // Merge data with existing user (only non-null fields)
+    MergeUpdate.merge(newApplicationUser, safeApplicationUser);
 
-
-    public void delete(Long id){
-        ApplicationUser u=findById(id);
-        Date dt = new Date();
-        u.setDeleted_at(dt);
-    }
-
-    public ApplicationUser update(Long id, ApplicationUser u){
-        ApplicationUser n = findById(id);
-        n.setName(u.getName());
-        n.setSurname(u.getSurname());
-        n.setEmail(u.getEmail());
-        n.setPasswordHash(u.getPasswordHash());
-        n.setBirthDate(u.getBirthDate());
-        n.setCreated_at(u.getCreated_at());
-        n.setVersion(u.getVersion());
-        n.setUpdated_at(u.getUpdated_at());
-        n.setDeleted_at(u.getDeleted_at());
-        return save(n);
-    }
+    // Update user
+    this.save(newApplicationUser);
+    return this.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
+  }
 
 }
 
