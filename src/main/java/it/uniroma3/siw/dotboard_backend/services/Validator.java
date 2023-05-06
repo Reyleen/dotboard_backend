@@ -9,7 +9,7 @@ import java.util.Objects;
 public interface Validator {
   static void validate(BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
-      String message = "Input data not valid at field " + Objects.requireNonNull(bindingResult.getFieldError()).getField();
+      String message = "Malformed input data at " + Objects.requireNonNull(bindingResult.getFieldError()).getField();
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
     }
   }
