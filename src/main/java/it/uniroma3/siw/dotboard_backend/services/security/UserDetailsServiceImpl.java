@@ -1,4 +1,4 @@
-package it.uniroma3.siw.dotboard_backend.services.security.services;
+package it.uniroma3.siw.dotboard_backend.services.security;
 
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
@@ -22,5 +22,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     return UserDetailsImpl.build(user);
   }
+  @Transactional
+  public ApplicationUser loadUserById(Long id) {
+    return userRepository.findById(id).orElseThrow(
+        () -> new UsernameNotFoundException("User Not Found with id: " + id));
+  }
+
 
 }

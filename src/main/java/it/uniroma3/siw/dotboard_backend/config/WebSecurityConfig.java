@@ -1,8 +1,8 @@
-package it.uniroma3.siw.dotboard_backend.services.security;
+package it.uniroma3.siw.dotboard_backend.config;
 
+import it.uniroma3.siw.dotboard_backend.services.security.UserDetailsServiceImpl;
 import it.uniroma3.siw.dotboard_backend.services.security.jwt.AuthEntryPointJwt;
 import it.uniroma3.siw.dotboard_backend.services.security.jwt.AuthTokenFilter;
-import it.uniroma3.siw.dotboard_backend.services.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin
 @Configuration
 @EnableGlobalMethodSecurity(
     // securedEnabled = true,
@@ -77,9 +79,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/api/test/**").permitAll()
         .antMatchers(AUTH_WHITELIST).permitAll()
         .anyRequest().authenticated();
-
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
   }
+
 
 }

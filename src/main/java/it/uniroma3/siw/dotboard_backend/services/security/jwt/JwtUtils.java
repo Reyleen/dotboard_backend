@@ -1,7 +1,7 @@
 package it.uniroma3.siw.dotboard_backend.services.security.jwt;
 
 import io.jsonwebtoken.*;
-import it.uniroma3.siw.dotboard_backend.services.security.services.UserDetailsImpl;
+import it.uniroma3.siw.dotboard_backend.services.security.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package it.uniroma3.siw.dotboard_backend.services.security.services;
+package it.uniroma3.siw.dotboard_backend.services.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
