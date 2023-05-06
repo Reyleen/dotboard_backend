@@ -1,8 +1,8 @@
-package it.uniroma3.siw.dotboard_backend.services.security;
+package it.uniroma3.siw.dotboard_backend.config;
 
+import it.uniroma3.siw.dotboard_backend.services.security.UserDetailsServiceImpl;
 import it.uniroma3.siw.dotboard_backend.services.security.jwt.AuthEntryPointJwt;
 import it.uniroma3.siw.dotboard_backend.services.security.jwt.AuthTokenFilter;
-import it.uniroma3.siw.dotboard_backend.services.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
