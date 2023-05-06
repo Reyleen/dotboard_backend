@@ -1,7 +1,6 @@
 package it.uniroma3.siw.dotboard_backend.repository;
 
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
-import it.uniroma3.siw.dotboard_backend.services.Sanitizer;
 import it.uniroma3.siw.dotboard_backend.utils.MergeUpdate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import java.util.Optional;
 @Repository
 public interface ApplicationUserRepository extends JpaRepository<ApplicationUser, Long>, MergeUpdate {
 
-  Sanitizer<ApplicationUser> sanitizer = new Sanitizer<>();
 
   Optional<ApplicationUser> findByEmailAndDeletedAtIsNull(String email);
 
@@ -31,12 +29,9 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
       throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
     }
 
-    // Sanitize input data
-    ApplicationUser safeApplicationUser = sanitizer.sanitize(applicationUser);
-
     // Save user
-    this.save(safeApplicationUser);
-    return this.findByEmailAndDeletedAtIsNull(safeApplicationUser.getEmail())
+    this.save(applicationUser);
+    return this.findByEmailAndDeletedAtIsNull(applicationUser.getEmail())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR));
   }
 
@@ -44,11 +39,8 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
     // Check if user exists
     ApplicationUser newApplicationUser = this.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-    // Sanitize input data
-    ApplicationUser safeApplicationUser = sanitizer.sanitize(applicationUser);
-
     // Merge data with existing user (only non-null fields)
-    MergeUpdate.merge(newApplicationUser, safeApplicationUser);
+    MergeUpdate.merge(newApplicationUser, applicationUser);
 
     // Update user
     this.save(newApplicationUser);

@@ -13,9 +13,7 @@ import java.util.Objects;
 @Entity
 public class ApplicationUser extends BaseModel {
 
-    @NotBlank
-    private String name;
-    @Nullable
+    String name;
     private String surname;
     @Email String email;
     @JsonIgnore

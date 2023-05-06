@@ -1,18 +1,14 @@
 package it.uniroma3.siw.dotboard_backend.model;
 
 import org.springframework.lang.Nullable;
-
 import javax.persistence.Entity;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Board  extends  BaseModel{
 
-    @NotBlank String name;
-    @Nullable String description;
-    Integer height; //Nullable?
-    Integer width;
-    @Nullable String publicLink;
+    String name;
+    String description;
+    String publicLink;
 
     public String getName() {
         return name;
@@ -29,22 +25,6 @@ public class Board  extends  BaseModel{
 
     public void setDescription(@Nullable String description) {
         this.description = description;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
     }
 
     @Nullable
