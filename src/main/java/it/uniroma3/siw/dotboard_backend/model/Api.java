@@ -9,10 +9,12 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Api {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -36,7 +38,6 @@ public class Api {
     @Nullable
     @JsonIgnore
     private Date deletedAt;
-
 
     private String url;
 
