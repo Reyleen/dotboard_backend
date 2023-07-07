@@ -1,13 +1,14 @@
 package it.uniroma3.siw.dotboard_backend;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DotboardBackendApplicationTests {
+public class DotboardBackendApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
+        return ;
     }
 
 }

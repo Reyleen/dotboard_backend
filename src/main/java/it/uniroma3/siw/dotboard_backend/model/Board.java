@@ -8,6 +8,7 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -33,6 +34,7 @@ public class Board {
     @UpdateTimestamp
     @Nullable
     private Date updatedAt;
+
     @Nullable
     @JsonIgnore
     private Date deletedAt;
