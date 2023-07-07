@@ -12,8 +12,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-public class BoardItem {
-
+public class Theme {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -38,14 +37,14 @@ public class BoardItem {
     @JsonIgnore
     private Date deletedAt;
 
-    @Nullable
-    private String caption;
+    private String name;
 
     @Nullable
-    private Integer height;
+    private String description;
 
-    @Nullable
-    private Integer width;
+    private String color;
+
+    private String backgroundColor;
 
     public Long getId() {
         return id;
@@ -89,31 +88,37 @@ public class BoardItem {
         this.deletedAt = deletedAt;
     }
 
-    @Nullable
-    public String getCaption() {
-        return caption;
+    public String getName() {
+        return name;
     }
 
-    public void setCaption(@Nullable String caption) {
-        this.caption = caption;
-    }
-
-    @Nullable
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(@Nullable Integer height) {
-        this.height = height;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Nullable
-    public Integer getWidth() {
-        return width;
+    public String getDescription() {
+        return description;
     }
 
-    public void setWidth(@Nullable Integer width) {
-        this.width = width;
+    public void setDescription(@Nullable String description) {
+        this.description = description;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     @Override
@@ -129,7 +134,7 @@ public class BoardItem {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        BoardItem other = (BoardItem) obj;
+        Theme other = (Theme) obj;
         return Objects.equals(id, other.getId());
     }
 }

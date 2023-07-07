@@ -2,16 +2,17 @@ package it.uniroma3.siw.dotboard_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.uniroma3.siw.dotboard_backend.utils.HTTPMethod;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
-@MappedSuperclass
-public class BaseModel {
-
+@Entity
+public class Api {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -36,6 +37,11 @@ public class BaseModel {
     @JsonIgnore
     private Date deletedAt;
 
+
+    private String url;
+
+    private HTTPMethod method;
+
     public Long getId() {
         return id;
     }
@@ -48,8 +54,8 @@ public class BaseModel {
         return createdAt;
     }
 
-    public void setCreatedAt(Date created_at) {
-        this.createdAt = created_at;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Integer getVersion() {
@@ -65,8 +71,8 @@ public class BaseModel {
         return updatedAt;
     }
 
-    public void setUpdatedAt(@Nullable Date updated_at) {
-        this.updatedAt = updated_at;
+    public void setUpdatedAt(@Nullable Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Nullable
@@ -74,8 +80,40 @@ public class BaseModel {
         return deletedAt;
     }
 
-    public void setDeletedAt(@Nullable Date deleted_at) {
-        this.deletedAt = deleted_at;
+    public void setDeletedAt(@Nullable Date deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public HTTPMethod getMethod() {
+        return method;
+    }
+
+    public void setMethod(HTTPMethod method) {
+        this.method = method;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Api other = (Api) obj;
+        return Objects.equals(id, other.getId());
+    }
 }
