@@ -12,7 +12,7 @@ import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
 import it.uniroma3.siw.dotboard_backend.repository.RoleRepository;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import it.uniroma3.siw.dotboard_backend.services.security.jwt.JwtUtils;
-import it.uniroma3.siw.dotboard_backend.services.security.services.UserDetailsImpl;
+import it.uniroma3.siw.dotboard_backend.services.security.UserDetailsImpl;
 import it.uniroma3.siw.dotboard_backend.utils.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
