@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface BoardItemRepository extends JpaRepository<BoardItem, Long> {
 
-    List<BoardItem> findAllByBoardIdAAndDeletedAtIsNull(Long id);
 
-    BoardItem findByIdAAndDeletedAtIsNull(Long id);
+    //List<BoardItem> findAllByBoardIdAndDeletedAtIsNull(Long id);
+
+    //BoardItem findByIdAAndDeletedAtIsNull(Long id);
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ApiRepository extends JpaRepository<Api, Long> {
 
-    List<Api> findByBoardAndByDeletedAtIsNull(Long id);
+    //List<Api> findByBoardAndByDeletedAtIsNull(Long id);
 
     List<Api> findAll();
 
