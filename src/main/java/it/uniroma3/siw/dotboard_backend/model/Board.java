@@ -53,6 +53,11 @@ public class Board {
     @OneToOne
     ApplicationUser user;
 
+    private boolean isPublic;
+
+    @OneToMany(mappedBy = "board")
+    List <BoardItem> boardItems;
+
     public ApplicationUser getUser() {
         return user;
     }
@@ -67,6 +72,14 @@ public class Board {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 
     @Nullable
@@ -145,6 +158,14 @@ public class Board {
 
     public void setWidth(@Nullable Integer width) {
         this.width = width;
+    }
+
+    public List<BoardItem> getBoardItems() {
+        return boardItems;
+    }
+
+    public void setBoardItems(List<BoardItem> boardItems) {
+        this.boardItems = boardItems;
     }
 
     @Override

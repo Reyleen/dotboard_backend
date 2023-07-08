@@ -7,7 +7,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import javax.validation.constraints.Null;
 import java.util.Date;
 import java.util.Objects;
 
@@ -46,6 +45,9 @@ public class BoardItem {
 
     @Nullable
     private Integer width;
+
+    @ManyToOne
+    Board board;
 
     public Long getId() {
         return id;
