@@ -51,26 +51,22 @@ public class ApplicationUser{
   private Date birthDate;
 
   @OneToMany
-  private List<Board> boards = new ArrayList<>();
-
-  public List<Board> getBoards() {
-    return boards;
-  }
-
-  public void setBoards(List<Board> boards) {
-    this.boards = boards;
-  }
+  private List<Board> boards;
 
   @ManyToMany(fetch = FetchType.LAZY)
-  private Set<Role> roles = new HashSet<>();
+  private Set<Role> roles;
 
-  public ApplicationUser() {
-  }
+    public ApplicationUser() {
+        roles = new HashSet<>();
+        boards = new ArrayList<>();
+    }
 
   public ApplicationUser(String username, String email, String password) {
     this.username = username;
     this.email = email;
     this.password = password;
+    roles = new HashSet<>();
+    boards = new ArrayList<>();
   }
 
   public String getName() {
@@ -121,6 +117,14 @@ public class ApplicationUser{
 
   public void setBirthDate(@Nullable Date birthDate) {
     this.birthDate = birthDate;
+  }
+
+  public List<Board> getBoards() {
+    return boards;
+  }
+
+  public void setBoards(List<Board> boards) {
+    this.boards = boards;
   }
 
   public Set<Role> getRoles() {

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(
                 title = "Dotboard APIs",
                 version = "${api.version}",
-                contact = @Contact(name = "Marco Napoleone, Chellee Mae Remache dela Reyna, Francesco Gaudino", url = "https://github.com/Reyleen/dotboard_backend"),
+                contact = @Contact(name = "Marco Napoleone, Chellee Mae Remacha Dela Reyna, Francesco Gaudino", url = "https://github.com/Reyleen/dotboard_backend"),
                 license = @License(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0"),
                 description = "Restful API endpoints for Dotboard services"
         ),

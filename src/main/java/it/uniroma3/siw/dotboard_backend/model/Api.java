@@ -43,6 +43,8 @@ public class Api {
 
     private HTTPMethod method;
 
+    //Getters and Setters Id
+
     public Long getId() {
         return id;
     }
@@ -50,6 +52,8 @@ public class Api {
     public void setId(Long id) {
         this.id = id;
     }
+
+    //Getters and Setters CreatedAt
 
     public Date getCreatedAt() {
         return createdAt;
@@ -59,6 +63,8 @@ public class Api {
         this.createdAt = createdAt;
     }
 
+    //Getters and Setters Version
+
     public Integer getVersion() {
         return version;
     }
@@ -66,6 +72,8 @@ public class Api {
     public void setVersion(Integer version) {
         this.version = version;
     }
+
+    //Getters and Setters UpdatedAt
 
     @Nullable
     public Date getUpdatedAt() {
@@ -76,6 +84,8 @@ public class Api {
         this.updatedAt = updatedAt;
     }
 
+    //Getters and Setters DeletedAt
+
     @Nullable
     public Date getDeletedAt() {
         return deletedAt;
@@ -85,6 +95,8 @@ public class Api {
         this.deletedAt = deletedAt;
     }
 
+    //Getters and Setters Url
+
     public String getUrl() {
         return url;
     }
@@ -93,6 +105,8 @@ public class Api {
         this.url = url;
     }
 
+    //Getters and Setters Method
+
     public HTTPMethod getMethod() {
         return method;
     }
@@ -100,6 +114,8 @@ public class Api {
     public void setMethod(HTTPMethod method) {
         this.method = method;
     }
+
+    //Equals and HashCode
 
     @Override
     public int hashCode() {

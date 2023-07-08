@@ -46,8 +46,17 @@ public class BoardItem {
     @Nullable
     private Integer width;
 
+    //ancora indecisa perchè un item può essere in più board
     @ManyToOne
     Board board;
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 
     public Long getId() {
         return id;
