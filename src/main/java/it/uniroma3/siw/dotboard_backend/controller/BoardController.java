@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import it.uniroma3.siw.dotboard_backend.dto.BoardDTO;
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.model.Board;
+import it.uniroma3.siw.dotboard_backend.model.BoardItem;
 import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
@@ -67,6 +68,7 @@ public class BoardController implements Validator {
         return newBoard;
     }
 
+    //Da scegliere cosa modificare, se descrizione/nome/ecc. o la parte delle boarditems
     @Operation(summary = "Update a board")
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Board update(@PathVariable("id") Long id, @RequestBody Board board) {
@@ -89,4 +91,14 @@ public class BoardController implements Validator {
         this.boardRepository.delete(board);
     }
 
+    @Operation(summary="Get all boardItems from a board")
+    @RequestMapping(value="{id}/boardItems", method=RequestMethod.GET)
+    public Iterable<BoardItem> getAllBoardItems(@PathVariable("id") Long id){
+        	Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+            if (!board.getUser().getId().equals(authUser.getRequestUser().getId())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
+            }
+            return board.getBoardItems();
+    }
 }

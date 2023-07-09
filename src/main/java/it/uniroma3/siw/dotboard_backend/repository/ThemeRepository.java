@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ThemeRepository extends JpaRepository<Theme, Long> {
 
-    //public List<Theme> findAllByNameOrColor(String param);
+    public List<Theme> findAllByName(String name);
+    public List<Theme> findAllByColor(String color);
 }

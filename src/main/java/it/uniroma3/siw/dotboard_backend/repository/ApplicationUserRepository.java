@@ -26,6 +26,8 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
 
   Boolean existsByEmail(String email);
 
+  Optional<ApplicationUser > findByUsernameAndDeletedAtIsNull(String username);
+
   default ApplicationUser create(ApplicationUser applicationUser) throws IllegalAccessException {
 
 

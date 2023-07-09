@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
+import it.uniroma3.siw.dotboard_backend.repository.RoleRepository;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
+import it.uniroma3.siw.dotboard_backend.utils.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Date;
 
@@ -25,6 +28,9 @@ public class ApplicationUserController implements Validator {
 
     @Autowired
     private ApplicationUserRepository applicationUserRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     // GET /users/{id}
     @Operation(summary = "Get user by id")
@@ -72,6 +78,18 @@ public class ApplicationUserController implements Validator {
         ApplicationUser applicationUser = this.applicationUserRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         applicationUser.setDeletedAt(new Date());
         this.applicationUserRepository.update(id, applicationUser);
+    }
+
+    @Operation(summary = "Get user by username")
+    @RequestMapping(value = "/findByUsername/{username}", method = RequestMethod.GET)
+    public ApplicationUser getByUsername(@PathVariable("username") String username, Principal principal) {
+        ApplicationUser current = this.applicationUserRepository.findByUsername(principal.getName()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        ApplicationUser requested = this.applicationUserRepository.findByUsernameAndDeletedAtIsNull(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (current.getId().equals(requested.getId()) || current.getRoles().contains(this.roleRepository.findByName(ERole.ROLE_ADMIN).orElse(null))){
+            return requested;
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to access this resource");
+        }
     }
 
 }
