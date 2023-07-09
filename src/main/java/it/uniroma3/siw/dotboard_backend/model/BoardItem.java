@@ -50,6 +50,8 @@ public class BoardItem {
     @ManyToOne
     Board board;
 
+    private Api api;
+
     public Board getBoard() {
         return board;
     }
@@ -125,6 +127,14 @@ public class BoardItem {
 
     public void setWidth(@Nullable Integer width) {
         this.width = width;
+    }
+
+    public Api getApi() {
+        return api;
+    }
+
+    public void setApi(Api api) {
+        this.api = api;
     }
 
     @Override

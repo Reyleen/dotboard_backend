@@ -2,7 +2,8 @@ package it.uniroma3.siw.dotboard_backend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import it.uniroma3.siw.dotboard_backend.model.BoardItem;
+import it.uniroma3.siw.dotboard_backend.model.Api;
+import it.uniroma3.siw.dotboard_backend.model.*;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +76,16 @@ public class BoardItemController  implements Validator {
         boardItem.getBoard().getBoardItems().remove(boardItem);
         boardItem.setDeletedAt(new Date());
         this.boardItemRepository.save(boardItem);
+    }
+
+    @Operation(summary = "Get API from a boardItem id")
+    @RequestMapping(value = "{id}/api", method = RequestMethod.GET)
+    public Api getAPI(@PathVariable("id") Long id) {
+        BoardItem boardItem = this.boardItemRepository.findById(id).orElse(null);
+        if (boardItem == null) {
+            return null;
+        }
+        return boardItem.getApi();
     }
 
 }
