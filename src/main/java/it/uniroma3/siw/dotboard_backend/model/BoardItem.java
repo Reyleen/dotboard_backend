@@ -7,7 +7,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -48,8 +50,9 @@ public class BoardItem {
 
     //ancora indecisa perchè un item può essere in più board
     @ManyToOne
-    Board board;
+    private Board board;
 
+    @ManyToOne
     private Api api;
 
     public Board getBoard() {
@@ -128,6 +131,7 @@ public class BoardItem {
     public void setWidth(@Nullable Integer width) {
         this.width = width;
     }
+
 
     public Api getApi() {
         return api;

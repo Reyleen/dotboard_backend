@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -55,8 +56,12 @@ public class Board {
 
     private boolean isPublic;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany
     List <BoardItem> boardItems;
+
+    public Board(){
+        boardItems = new ArrayList<>();
+    }
 
     public ApplicationUser getUser() {
         return user;

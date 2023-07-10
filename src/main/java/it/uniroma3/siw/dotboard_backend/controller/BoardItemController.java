@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.uniroma3.siw.dotboard_backend.model.Api;
 import it.uniroma3.siw.dotboard_backend.model.*;
-import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
+import it.uniroma3.siw.dotboard_backend.repository.ApiRepository;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -26,14 +25,8 @@ public class BoardItemController  implements Validator {
     private BoardItemRepository boardItemRepository;
 
     @Autowired
-    private BoardRepository boardRepository;
+    private ApiRepository apiRepository;
 
-    // GET all boardItems
-    @Operation(summary = "Get all boardItems of the system")
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public Iterable<BoardItem> getAll() {
-        return this.boardItemRepository.findAll();
-    }
 
     @Operation(summary = "Get boardItem by id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -41,29 +34,6 @@ public class BoardItemController  implements Validator {
         return this.boardItemRepository.findById(id).orElse(null);
     }
 
-    //Da modificare ed implementare Api
-    @Operation(summary = "Create a new boardItem")
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public BoardItem create(@RequestBody BoardItem boardItem) {
-        //dobbiamo collegarlo ad una api
-        return this.boardItemRepository.save(boardItem);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Update a boardItem")
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public BoardItem update(@PathVariable("id") Long id, @RequestBody BoardItem boardItem) {
-        BoardItem oldBoardItem = this.boardItemRepository.findById(id).orElse(null);
-        if (oldBoardItem == null) {
-            return null;
-        }
-        //Da aggiungere un service che faccia la creazione delle boardItem con API implementata/collegata
-        boardItem.setId(id);
-        boardItem.setCreatedAt(oldBoardItem.getCreatedAt());
-        boardItem.setUpdatedAt(new Date());
-        return this.boardItemRepository.save(boardItem);
-    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete a boardItem")
@@ -88,4 +58,15 @@ public class BoardItemController  implements Validator {
         return boardItem.getApi();
     }
 
+    @Operation(summary = "Get API from a boardItem id")
+    @RequestMapping(value = "{itemId}/api/{apiId}", method = RequestMethod.POST)
+    public BoardItem setAPI(@PathVariable("itemId") Long itemId, @PathVariable("apiId") Long apiId) {
+        BoardItem boardItem = this.boardItemRepository.findById(itemId).orElse(null);
+        Api api = this.apiRepository.findById(apiId).orElse(null);
+        if (boardItem == null || api == null) {
+            return null;
+        }
+        boardItem.setApi(api);
+        return this.boardItemRepository.save(boardItem);
+    }
 }
