@@ -9,7 +9,9 @@ import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Null;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Theme {
@@ -26,7 +28,6 @@ public class Theme {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(columnDefinition = "INTEGER DEFAULT 1")
     private Integer version;
-
 
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -45,6 +46,13 @@ public class Theme {
     private String color;
 
     private String backgroundColor;
+
+    @OneToMany(mappedBy = "theme")
+    private Set<Board> boards;
+
+    public Theme() {
+        boards = new HashSet<>();
+    }
 
     public Long getId() {
         return id;
@@ -119,6 +127,14 @@ public class Theme {
 
     public void setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public Set<Board> getBoards() {
+        return boards;
+    }
+
+    public void setBoards(Set<Board> boards) {
+        this.boards = boards;
     }
 
     @Override
