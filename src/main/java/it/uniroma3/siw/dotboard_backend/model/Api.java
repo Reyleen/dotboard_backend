@@ -44,6 +44,7 @@ public class Api {
 
     private HTTPMethod method;
 
+    @JsonIgnore
     @OneToMany
     private List<BoardItem> boarditems;
 

@@ -109,7 +109,6 @@ public class BoardController implements Validator {
             return board.getBoardItems();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update a boardItem")
     @RequestMapping(value = "{boardId}/boardItem/{itemId}", method = RequestMethod.PUT)
     public BoardItem update(@PathVariable("boardId") Long boardId,@PathVariable("itemId") Long itemId,
@@ -128,7 +127,6 @@ public class BoardController implements Validator {
     }
 
     @Operation(summary = "Create a new boardItem in the current Board")
-    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "{id}/boardItem", method = RequestMethod.POST)
     public Board create(@PathVariable("id") Long id, @RequestBody BoardItem boardItem) {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)

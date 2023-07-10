@@ -56,6 +56,7 @@ public class Board {
 
     private boolean isPublic;
 
+    @JsonIgnore
     @OneToMany
     List <BoardItem> boardItems;
 

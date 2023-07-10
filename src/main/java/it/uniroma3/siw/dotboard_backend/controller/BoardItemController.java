@@ -35,7 +35,6 @@ public class BoardItemController  implements Validator {
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete a boardItem")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id) {

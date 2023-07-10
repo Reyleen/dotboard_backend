@@ -48,10 +48,11 @@ public class BoardItem {
     @Nullable
     private Integer width;
 
-    //ancora indecisa perchè un item può essere in più board
+    @JsonIgnore
     @ManyToOne
     private Board board;
 
+    @JsonIgnore
     @ManyToOne
     private Api api;
 
