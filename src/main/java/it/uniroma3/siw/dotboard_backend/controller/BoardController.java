@@ -8,14 +8,18 @@ import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.model.Board;
 import it.uniroma3.siw.dotboard_backend.model.BoardItem;
 import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
+import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import it.uniroma3.siw.dotboard_backend.services.security.AuthenticatedUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -33,6 +37,9 @@ public class BoardController implements Validator {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private BoardItemRepository boardItemRepository;
 
     // GET /boards
     @Operation(summary = "Get all boards of authenticated user")
@@ -100,5 +107,35 @@ public class BoardController implements Validator {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
             }
             return board.getBoardItems();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update a boardItem")
+    @RequestMapping(value = "{boardId}/boardItem/{itemId}", method = RequestMethod.PUT)
+    public BoardItem update(@PathVariable("boardId") Long boardId,@PathVariable("itemId") Long itemId,
+                            String caption, int width, int height) {
+        BoardItem boardItem = this.boardItemRepository.findById(itemId).orElse(null);
+
+        if (boardItem == null) {
+            return null;
+        }
+        boardItem.setCaption(caption);
+        boardItem.setHeight(height);
+        boardItem.setWidth(width);
+        boardItem.setCreatedAt(boardItem.getCreatedAt());
+        boardItem.setUpdatedAt(new Date());
+        return this.boardItemRepository.save(boardItem);
+    }
+
+    @Operation(summary = "Create a new boardItem in the current Board")
+    @PreAuthorize("hasRole('ADMIN')")
+    @RequestMapping(value = "{id}/boardItem", method = RequestMethod.POST)
+    public Board create(@PathVariable("id") Long id, @RequestBody BoardItem boardItem) {
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        this.boardItemRepository.save(boardItem);
+        board.getBoardItems().add(boardItem);
+        boardItem.setBoard(board);
+        return this.boardRepository.save(board);
     }
 }

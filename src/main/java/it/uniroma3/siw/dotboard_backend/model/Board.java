@@ -56,7 +56,7 @@ public class Board {
 
     private boolean isPublic;
 
-    @ManyToMany
+    @OneToMany
     List <BoardItem> boardItems;
 
     public Board(){

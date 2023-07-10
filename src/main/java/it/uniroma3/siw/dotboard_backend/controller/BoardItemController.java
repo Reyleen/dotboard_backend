@@ -25,15 +25,6 @@ public class BoardItemController  implements Validator {
     @Autowired
     private BoardItemRepository boardItemRepository;
 
-    @Autowired
-    private BoardRepository boardRepository;
-
-    // GET all boardItems
-    @Operation(summary = "Get all boardItems of the system")
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public Iterable<BoardItem> getAll() {
-        return this.boardItemRepository.findAll();
-    }
 
     @Operation(summary = "Get boardItem by id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -41,29 +32,6 @@ public class BoardItemController  implements Validator {
         return this.boardItemRepository.findById(id).orElse(null);
     }
 
-    //Da modificare ed implementare Api
-    @Operation(summary = "Create a new boardItem")
-    @PreAuthorize("hasRole('ADMIN')")
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public BoardItem create(@RequestBody BoardItem boardItem) {
-        //dobbiamo collegarlo ad una api
-        return this.boardItemRepository.save(boardItem);
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Update a boardItem")
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public BoardItem update(@PathVariable("id") Long id, @RequestBody BoardItem boardItem) {
-        BoardItem oldBoardItem = this.boardItemRepository.findById(id).orElse(null);
-        if (oldBoardItem == null) {
-            return null;
-        }
-        //Da aggiungere un service che faccia la creazione delle boardItem con API implementata/collegata
-        boardItem.setId(id);
-        boardItem.setCreatedAt(oldBoardItem.getCreatedAt());
-        boardItem.setUpdatedAt(new Date());
-        return this.boardItemRepository.save(boardItem);
-    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete a boardItem")
@@ -73,9 +41,7 @@ public class BoardItemController  implements Validator {
         if (boardItem == null) {
             return;
         }
-        for(Board b : boardItem.getBoards()) {
-            b.getBoardItems().remove(boardItem);
-        }
+        boardItem.getBoard().getBoardItems().remove(boardItem);
         boardItem.setDeletedAt(new Date());
         this.boardItemRepository.save(boardItem);
     }
@@ -89,5 +55,4 @@ public class BoardItemController  implements Validator {
         }
         return boardItem.getApi();
     }
-
 }

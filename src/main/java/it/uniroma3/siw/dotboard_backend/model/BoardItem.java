@@ -49,22 +49,18 @@ public class BoardItem {
     private Integer width;
 
     //ancora indecisa perchè un item può essere in più board
-    @ManyToMany
-    private List<Board> boards;
+    @ManyToOne
+    private Board board;
 
     @ManyToOne
     private Api api;
 
-    public BoardItem(){
-        boards = new ArrayList<>();
+    public Board getBoard() {
+        return board;
     }
 
-    public List<Board> getBoards() {
-        return boards;
-    }
-
-    public void setBoards(List<Board> boards) {
-        this.boards = boards;
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     public Long getId() {
