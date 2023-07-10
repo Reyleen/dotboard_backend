@@ -59,7 +59,7 @@ public class BoardItemController  implements Validator {
     }
 
     @Operation(summary = "Get API from a boardItem id")
-    @RequestMapping(value = "{id}/api", method = RequestMethod.POST)
+    @RequestMapping(value = "{itemId}/api/{apiId}", method = RequestMethod.POST)
     public BoardItem setAPI(@PathVariable("itemId") Long itemId, @PathVariable("apiId") Long apiId) {
         BoardItem boardItem = this.boardItemRepository.findById(itemId).orElse(null);
         Api api = this.apiRepository.findById(apiId).orElse(null);
