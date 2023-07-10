@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.uniroma3.siw.dotboard_backend.model.Api;
 import it.uniroma3.siw.dotboard_backend.model.*;
-import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
+import it.uniroma3.siw.dotboard_backend.repository.ApiRepository;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -24,6 +23,9 @@ public class BoardItemController  implements Validator {
 
     @Autowired
     private BoardItemRepository boardItemRepository;
+
+    @Autowired
+    private ApiRepository apiRepository;
 
 
     @Operation(summary = "Get boardItem by id")
@@ -54,5 +56,17 @@ public class BoardItemController  implements Validator {
             return null;
         }
         return boardItem.getApi();
+    }
+
+    @Operation(summary = "Get API from a boardItem id")
+    @RequestMapping(value = "{id}/api", method = RequestMethod.POST)
+    public BoardItem setAPI(@PathVariable("itemId") Long itemId, @PathVariable("apiId") Long apiId) {
+        BoardItem boardItem = this.boardItemRepository.findById(itemId).orElse(null);
+        Api api = this.apiRepository.findById(apiId).orElse(null);
+        if (boardItem == null || api == null) {
+            return null;
+        }
+        boardItem.setApi(api);
+        return this.boardItemRepository.save(boardItem);
     }
 }
