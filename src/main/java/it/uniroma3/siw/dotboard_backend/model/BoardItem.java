@@ -7,7 +7,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -47,17 +49,22 @@ public class BoardItem {
     private Integer width;
 
     //ancora indecisa perchè un item può essere in più board
-    @ManyToOne
-    Board board;
+    @ManyToMany
+    private List<Board> boards;
 
+    @ManyToOne
     private Api api;
 
-    public Board getBoard() {
-        return board;
+    public BoardItem(){
+        boards = new ArrayList<>();
     }
 
-    public void setBoard(Board board) {
-        this.board = board;
+    public List<Board> getBoards() {
+        return boards;
+    }
+
+    public void setBoards(List<Board> boards) {
+        this.boards = boards;
     }
 
     public Long getId() {
@@ -128,6 +135,7 @@ public class BoardItem {
     public void setWidth(@Nullable Integer width) {
         this.width = width;
     }
+
 
     public Api getApi() {
         return api;

@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -43,8 +44,22 @@ public class Api {
 
     private HTTPMethod method;
 
-    //Getters and Setters Id
+    @OneToMany
+    private List<BoardItem> boarditems;
 
+    public Api(){
+        boarditems = new ArrayList<>();
+    }
+
+    public List<BoardItem> getBoarditems() {
+        return boarditems;
+    }
+
+    public void setBoarditems(List<BoardItem> boarditems) {
+        this.boarditems = boarditems;
+    }
+
+    //Getters and Setters Id
     public Long getId() {
         return id;
     }

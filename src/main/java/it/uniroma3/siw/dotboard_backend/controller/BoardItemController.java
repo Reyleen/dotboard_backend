@@ -73,7 +73,9 @@ public class BoardItemController  implements Validator {
         if (boardItem == null) {
             return;
         }
-        boardItem.getBoard().getBoardItems().remove(boardItem);
+        for(Board b : boardItem.getBoards()) {
+            b.getBoardItems().remove(boardItem);
+        }
         boardItem.setDeletedAt(new Date());
         this.boardItemRepository.save(boardItem);
     }

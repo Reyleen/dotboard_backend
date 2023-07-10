@@ -9,7 +9,7 @@ import java.util.List;
 public interface BoardItemRepository extends JpaRepository<BoardItem, Long> {
 
 
-    List<BoardItem> findAllByBoardAndDeletedAtIsNull(Board board);
+    //List<BoardItem> findAllByBoardAndDeletedAtIsNull(Board board);
 
     BoardItem findByIdAndDeletedAtIsNull(Long id);
 }
