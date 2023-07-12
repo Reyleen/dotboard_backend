@@ -60,12 +60,23 @@ public class Board {
     @OneToMany
     List <BoardItem> boardItems;
 
+    @ManyToOne
+    private Theme theme;
+
     public Board(){
         boardItems = new ArrayList<>();
     }
 
     public ApplicationUser getUser() {
         return user;
+    }
+
+    public Theme getTheme() {
+        return theme;
+    }
+
+    public void setTheme(Theme theme) {
+        this.theme = theme;
     }
 
     public void setUser(ApplicationUser user) {
