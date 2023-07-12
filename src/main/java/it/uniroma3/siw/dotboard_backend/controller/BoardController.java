@@ -7,9 +7,11 @@ import it.uniroma3.siw.dotboard_backend.dto.BoardDTO;
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.model.Board;
 import it.uniroma3.siw.dotboard_backend.model.BoardItem;
+import it.uniroma3.siw.dotboard_backend.model.Theme;
 import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
+import it.uniroma3.siw.dotboard_backend.repository.ThemeRepository;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import it.uniroma3.siw.dotboard_backend.services.security.AuthenticatedUser;
 import org.modelmapper.ModelMapper;
@@ -40,6 +42,9 @@ public class BoardController implements Validator {
 
     @Autowired
     private BoardItemRepository boardItemRepository;
+
+    @Autowired
+    private ThemeRepository themeRepository;
 
     // GET /boards
     @Operation(summary = "Get all boards of authenticated user")
@@ -134,6 +139,36 @@ public class BoardController implements Validator {
         this.boardItemRepository.save(boardItem);
         board.getBoardItems().add(boardItem);
         boardItem.setBoard(board);
+        return this.boardRepository.save(board);
+    }
+
+    @Operation(summary = "Add a theme by color to a board")
+    @RequestMapping(value = "{id}/addThemeByColor/{color}", method = RequestMethod.PUT)
+    public Board addTheme1ToBoard(@PathVariable("id") Long id, @PathVariable("color") String color) {
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        Theme theme = this.themeRepository.findByColorAndDeletedAtIsNull(color)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
+        if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
+        }
+        board.setTheme(theme);
+        theme.getBoards().add(board);
+        return this.boardRepository.save(board);
+    }
+
+    @Operation(summary = "Add a theme by name to a board")
+    @RequestMapping(value = "{id}/AddThemeByName/{name}", method = RequestMethod.PUT)
+    public Board addThemeToBoard(@PathVariable("id") Long id, @PathVariable("name") String name) {
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        Theme theme = this.themeRepository.findByNameAndDeletedAtIsNull(name)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
+        if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
+        }
+        board.setTheme(theme);
+        theme.getBoards().add(board);
         return this.boardRepository.save(board);
     }
 }

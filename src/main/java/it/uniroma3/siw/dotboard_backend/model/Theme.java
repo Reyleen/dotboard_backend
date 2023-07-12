@@ -47,6 +47,7 @@ public class Theme {
 
     private String backgroundColor;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "theme")
     private Set<Board> boards;
 

@@ -60,8 +60,12 @@ public class Board {
     @OneToMany
     List <BoardItem> boardItems;
 
+    @JsonIgnore
     @ManyToOne
     private Theme theme;
+
+    private Integer x;
+    private Integer y;
 
     public Board(){
         boardItems = new ArrayList<>();
@@ -183,6 +187,22 @@ public class Board {
 
     public void setBoardItems(List<BoardItem> boardItems) {
         this.boardItems = boardItems;
+    }
+
+    public Integer getX() {
+        return x;
+    }
+
+    public void setX(Integer x) {
+        this.x = x;
+    }
+
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
     }
 
     @Override
