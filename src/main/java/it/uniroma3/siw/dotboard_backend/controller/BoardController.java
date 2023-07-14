@@ -12,16 +12,15 @@ import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
 import it.uniroma3.siw.dotboard_backend.repository.ThemeRepository;
+import it.uniroma3.siw.dotboard_backend.services.BoardService;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import it.uniroma3.siw.dotboard_backend.services.security.AuthenticatedUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -45,6 +44,9 @@ public class BoardController implements Validator {
 
     @Autowired
     private ThemeRepository themeRepository;
+
+    @Autowired
+    private BoardService boardService;
 
     // GET /boards
     @Operation(summary = "Get all boards of authenticated user")
@@ -70,14 +72,8 @@ public class BoardController implements Validator {
     public Board create(@RequestBody BoardDTO board) {
         Board newBoard = modelMapper.map(board, Board.class);
         ApplicationUser user = authUser.getRequestUser();
-        newBoard.setUser(user);
-        boardRepository.save(newBoard);
 
-        //save the bord in the user list of boards
-        user.getBoards().add(newBoard);
-        applicationUserRepository.save(user);
-
-        return newBoard;
+        return this.boardService.createBoard(newBoard, user);
     }
 
     //Da scegliere cosa modificare, se descrizione/nome/ecc. o la parte delle boarditems
@@ -100,7 +96,10 @@ public class BoardController implements Validator {
         if (!board.getUser().getId().equals(authUser.getRequestUser().getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
         }
-        this.boardRepository.delete(board);
+        this.boardService.deleteBoard(board);
+       /* board.setDeletedAt(new Date());
+        board.getTheme().getBoards().remove(board);
+        this.boardRepository.save(board);*/
     }
 
     @Operation(summary="Get all boardItems from a board")
@@ -114,23 +113,6 @@ public class BoardController implements Validator {
             return board.getBoardItems();
     }
 
-    @Operation(summary = "Update a boardItem")
-    @RequestMapping(value = "{boardId}/boardItem/{itemId}", method = RequestMethod.PUT)
-    public BoardItem update(@PathVariable("boardId") Long boardId,@PathVariable("itemId") Long itemId,
-                            String caption, int width, int height) {
-        BoardItem boardItem = this.boardItemRepository.findById(itemId).orElse(null);
-
-        if (boardItem == null) {
-            return null;
-        }
-        boardItem.setCaption(caption);
-        boardItem.setHeight(height);
-        boardItem.setWidth(width);
-        boardItem.setCreatedAt(boardItem.getCreatedAt());
-        boardItem.setUpdatedAt(new Date());
-        return this.boardItemRepository.save(boardItem);
-    }
-
     @Operation(summary = "Create a new boardItem in the current Board")
     @RequestMapping(value = "{id}/boardItem", method = RequestMethod.POST)
     public Board create(@PathVariable("id") Long id, @RequestBody BoardItem boardItem) {
@@ -142,33 +124,17 @@ public class BoardController implements Validator {
         return this.boardRepository.save(board);
     }
 
-    @Operation(summary = "Add a theme by color to a board")
-    @RequestMapping(value = "{id}/addThemeByColor/{color}", method = RequestMethod.PUT)
-    public Board addTheme1ToBoard(@PathVariable("id") Long id, @PathVariable("color") String color) {
+    @Operation(summary = "Add a theme by name/color to a board")
+    @RequestMapping(value = "{id}/addThemeToBoard/{colorOrName}", method = RequestMethod.PUT)
+    public Board addThemeToBoard(@PathVariable("id") Long id, @PathVariable("colorOrName") String name) {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
-        Theme theme = this.themeRepository.findByColorAndDeletedAtIsNull(color)
+        Theme theme = this.themeRepository.findByNameOrColorAndDeletedAtIsNull(name, name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
         if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
         }
-        board.setTheme(theme);
-        theme.getBoards().add(board);
-        return this.boardRepository.save(board);
+        return  this.boardService.addTheme(board, theme);
     }
 
-    @Operation(summary = "Add a theme by name to a board")
-    @RequestMapping(value = "{id}/AddThemeByName/{name}", method = RequestMethod.PUT)
-    public Board addThemeToBoard(@PathVariable("id") Long id, @PathVariable("name") String name) {
-        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
-        Theme theme = this.themeRepository.findByNameAndDeletedAtIsNull(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
-        if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-        }
-        board.setTheme(theme);
-        theme.getBoards().add(board);
-        return this.boardRepository.save(board);
-    }
 }

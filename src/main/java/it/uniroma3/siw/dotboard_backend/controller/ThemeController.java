@@ -68,19 +68,19 @@ public class ThemeController  implements Validator {
         this.boardRepository.save(board);
     }
 
-    @Operation(summary = "Get theme by name")
+    @Operation(summary = "Get theme by name/color")
     @RequestMapping(value = "{name}", method = RequestMethod.GET)
     public Theme getByName(@PathVariable("name") String name) {
-        return this.themeRepository.findByNameAndDeletedAtIsNull(name)
+        return this.themeRepository.findByNameOrColorAndDeletedAtIsNull(name, name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
     }
 
-    @Operation(summary = "Get theme by color")
+    /*@Operation(summary = "Get theme by color")
     @RequestMapping(value = "{color}", method = RequestMethod.GET)
     public Theme getByColor(@PathVariable("color") String color) {
-        return this.themeRepository.findByColorAndDeletedAtIsNull(color)
+        return this.themeRepository.findByNameOrColorAndDeletedAtIsNull(null, color)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
-    }
+    }*/
 
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create a theme")
@@ -104,7 +104,7 @@ public class ThemeController  implements Validator {
     @Operation(summary = "Get all boards with a theme")
     @RequestMapping(value="findBoards/{name}" , method = RequestMethod.GET)
     public Iterable<Board> getBoardsByTheme(@PathVariable("name") String name){
-    	Theme theme = this.themeRepository.findByNameAndDeletedAtIsNull(name)
+    	Theme theme = this.themeRepository.findByNameOrColorAndDeletedAtIsNull(name, name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
     	return theme.getBoards();
     }
