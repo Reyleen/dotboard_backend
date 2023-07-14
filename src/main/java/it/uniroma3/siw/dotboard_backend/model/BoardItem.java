@@ -70,9 +70,6 @@ public class BoardItem {
     private String subtitle;
 
     @Nullable
-    private String city;
-
-    @Nullable
     private String url;
 
     public Board getBoard() {
@@ -203,15 +200,6 @@ public class BoardItem {
 
     public void setSubtitle(@Nullable String subtitle) {
         this.subtitle = subtitle;
-    }
-
-    @Nullable
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(@Nullable String city) {
-        this.city = city;
     }
 
     @Nullable
