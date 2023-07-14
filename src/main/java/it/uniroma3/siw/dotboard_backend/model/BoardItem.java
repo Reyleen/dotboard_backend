@@ -2,14 +2,13 @@ package it.uniroma3.siw.dotboard_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.uniroma3.siw.dotboard_backend.utils.ItemType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -43,10 +42,16 @@ public class BoardItem {
     private String caption;
 
     @Nullable
-    private Integer height;
+    private Integer h;
 
     @Nullable
-    private Integer width;
+    private Integer w;
+
+    @Nullable
+    private Integer x;
+
+    @Nullable
+    private Integer y;
 
     @JsonIgnore
     @ManyToOne
@@ -55,6 +60,20 @@ public class BoardItem {
     @JsonIgnore
     @ManyToOne
     private Api api;
+
+    private ItemType category;
+
+    @Nullable
+    private String title;
+
+    @Nullable
+    private String subtitle;
+
+    @Nullable
+    private String city;
+
+    @Nullable
+    private String url;
 
     public Board getBoard() {
         return board;
@@ -116,21 +135,21 @@ public class BoardItem {
     }
 
     @Nullable
-    public Integer getHeight() {
-        return height;
+    public Integer getH() {
+        return h;
     }
 
-    public void setHeight(@Nullable Integer height) {
-        this.height = height;
+    public void setH(@Nullable Integer height) {
+        this.h = height;
     }
 
     @Nullable
-    public Integer getWidth() {
-        return width;
+    public Integer getW() {
+        return w;
     }
 
-    public void setWidth(@Nullable Integer width) {
-        this.width = width;
+    public void setW(@Nullable Integer width) {
+        this.w = width;
     }
 
 
@@ -140,6 +159,68 @@ public class BoardItem {
 
     public void setApi(Api api) {
         this.api = api;
+    }
+
+    @Nullable
+    public Integer getX() {
+        return x;
+    }
+
+    public void setX(@Nullable Integer x) {
+        this.x = x;
+    }
+
+    @Nullable
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(@Nullable Integer y) {
+        this.y = y;
+    }
+
+    public ItemType getCategory() {
+        return category;
+    }
+
+    public void setCategory(ItemType category) {
+        this.category = category;
+    }
+
+    @Nullable
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(@Nullable String title) {
+        this.title = title;
+    }
+
+    @Nullable
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(@Nullable String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    @Nullable
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(@Nullable String city) {
+        this.city = city;
+    }
+
+    @Nullable
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(@Nullable String url) {
+        this.url = url;
     }
 
     @Override

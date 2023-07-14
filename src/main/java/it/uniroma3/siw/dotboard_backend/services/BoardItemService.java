@@ -13,8 +13,8 @@ public class BoardItemService {
 
     public BoardItem createBoardItem(BoardItem boardItem, Api api){
     boardItem.setCreatedAt(new Date());
-    boardItem.setHeight(1); //misure default
-    boardItem.setWidth(1);
+    boardItem.setH(1); //misure default
+    boardItem.setW(1);
     if(api != null){
         boardItem.setApi(api);
     }

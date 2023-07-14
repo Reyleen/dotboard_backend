@@ -6,7 +6,9 @@ import it.uniroma3.siw.dotboard_backend.model.Api;
 import it.uniroma3.siw.dotboard_backend.model.*;
 import it.uniroma3.siw.dotboard_backend.repository.ApiRepository;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
+import it.uniroma3.siw.dotboard_backend.utils.ItemType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,6 +68,34 @@ public class BoardItemController  implements Validator {
             return null;
         }
         boardItem.setApi(api);
+        return this.boardItemRepository.save(boardItem);
+    }
+
+    @Operation(summary = "Update a boardItem")
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public BoardItem update(@PathVariable("id") Long itemId, @Nullable String title,
+                            @Nullable String subtitle, @Nullable String city,
+                            @Nullable String url) {
+        BoardItem boardItem = this.boardItemRepository.findById(itemId).orElse(null);
+
+        if (boardItem == null) {
+            return null;
+        }
+
+        if(boardItem.getCategory() == ItemType.TEXT){
+            boardItem.setTitle(title);
+            boardItem.setSubtitle(subtitle);
+        } else if(boardItem.getCategory() == ItemType.IMAGE){
+            boardItem.setTitle(title);
+            boardItem.setUrl(url);
+        } else if(boardItem.getCategory() == ItemType.WEATHER){
+            boardItem.setCity(city);
+        } else {
+            boardItem.setUrl(url);
+        }
+
+        boardItem.setCreatedAt(boardItem.getCreatedAt());
+        boardItem.setUpdatedAt(new Date());
         return this.boardItemRepository.save(boardItem);
     }
 }
