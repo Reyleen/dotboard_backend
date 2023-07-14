@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<Board, Long>, MergeUpdate {
 
 
-  Optional<Board> findByIdAndDeletedAtIsNull(Long id);
+  Board findByIdAndDeletedAtIsNull(Long id);
 
   // find all boards owned by user with id = userId
   List<Board> findByUserIdAndDeletedAtIsNull(Long userId);

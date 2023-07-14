@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
+
 
 @RestController
 @RequestMapping("/api/boards")
@@ -59,8 +61,7 @@ public class BoardController implements Validator {
     @Operation(summary = "Get board by id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Board getById(@PathVariable("id") Long id) {
-        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         if (!board.getUser().getId().equals(authUser.getRequestUser().getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
         }
@@ -69,30 +70,22 @@ public class BoardController implements Validator {
 
     @Operation(summary = "Create a new board")
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public Board create(@RequestBody BoardDTO board) {
-        Board newBoard = modelMapper.map(board, Board.class);
+    public Board create(@RequestBody Board board) {
         ApplicationUser user = authUser.getRequestUser();
-
-        return this.boardService.createBoard(newBoard, user);
+        return this.boardService.createBoard(board, user);
     }
 
     //Da scegliere cosa modificare, se descrizione/nome/ecc. o la parte delle boarditems
     @Operation(summary = "Update a board")
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public Board update(@PathVariable("id") Long id, @RequestBody Board board) {
-        board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
-        if (!board.getUser().getId().equals(authUser.getRequestUser().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-        }
-        return this.boardRepository.save(board);
+    public Board update(@PathVariable("id") Long id, @RequestBody Board updatedBoard, Principal principal) {
+        return this.boardService.update(id, updatedBoard, principal);
     }
 
     @Operation(summary = "Delete a board")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id) {
-        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         if (!board.getUser().getId().equals(authUser.getRequestUser().getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
         }
@@ -105,8 +98,7 @@ public class BoardController implements Validator {
     @Operation(summary="Get all boardItems from a board")
     @RequestMapping(value="{id}/boardItems", method=RequestMethod.GET)
     public Iterable<BoardItem> getAllBoardItems(@PathVariable("id") Long id){
-        	Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        	Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
             if (!board.getUser().getId().equals(authUser.getRequestUser().getId())) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
             }
@@ -116,8 +108,7 @@ public class BoardController implements Validator {
     @Operation(summary = "Create a new boardItem in the current Board")
     @RequestMapping(value = "{id}/boardItem", method = RequestMethod.POST)
     public Board create(@PathVariable("id") Long id, @RequestBody BoardItem boardItem) {
-        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         this.boardItemRepository.save(boardItem);
         board.getBoardItems().add(boardItem);
         boardItem.setBoard(board);
@@ -127,8 +118,7 @@ public class BoardController implements Validator {
     @Operation(summary = "Add a theme by name/color to a board")
     @RequestMapping(value = "{id}/addThemeToBoard/{colorOrName}", method = RequestMethod.PUT)
     public Board addThemeToBoard(@PathVariable("id") Long id, @PathVariable("colorOrName") String name) {
-        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         Theme theme = this.themeRepository.findByNameOrColorAndDeletedAtIsNull(name, name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
         if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){

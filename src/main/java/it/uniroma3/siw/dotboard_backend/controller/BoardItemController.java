@@ -1,6 +1,7 @@
 package it.uniroma3.siw.dotboard_backend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.uniroma3.siw.dotboard_backend.model.Api;
 import it.uniroma3.siw.dotboard_backend.model.*;
@@ -67,13 +68,8 @@ public class BoardItemController  implements Validator {
 
     @Operation(summary = "Update a boardItem")
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public BoardItem update(@PathVariable("id") Long id, @RequestParam @Nullable String title,
-                            @RequestParam @Nullable String subtitle,
-                            @RequestParam @Nullable String url,
-                            @RequestParam Integer x, @RequestParam Integer y,
+    public BoardItem update(@PathVariable("id") Long id, @RequestBody BoardItem updatedBoardItem,
                             Principal principal) {
-
-        BoardItem boardItem = this.boardItemService.update(id,title,subtitle,url,x,y,principal);
-        return this.boardItemRepository.save(boardItem);
+        return this.boardItemService.update(id,updatedBoardItem,principal);
     }
 }

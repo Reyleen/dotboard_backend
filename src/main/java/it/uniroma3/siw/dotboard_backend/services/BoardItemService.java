@@ -73,27 +73,26 @@ public class BoardItemService {
     }
 
     @Transactional
-    public BoardItem update(Long id,@Nullable String title,
-                            @Nullable String subtitle,
-                            @Nullable String url,Integer x, Integer y, Principal principal) {
+    public BoardItem update(Long id,BoardItem updatedBoardItem, Principal principal) {
         BoardItem boardItem = this.getById(id);
         if (this.isOwner(principal, boardItem)) {
             if (boardItem.getCategory() == ItemType.TEXT) {
-                boardItem.setTitle(title);
-                boardItem.setSubtitle(subtitle);
+                boardItem.setTitle(updatedBoardItem.getTitle());
+                boardItem.setSubtitle(updatedBoardItem.getSubtitle());
             } else if (boardItem.getCategory() == ItemType.IMAGE) {
-                boardItem.setTitle(title);
-                boardItem.setUrl(url);
+                boardItem.setTitle(updatedBoardItem.getTitle());
+                boardItem.setUrl(updatedBoardItem.getUrl());
             } else if (boardItem.getCategory() == ItemType.WEATHER) {
-                boardItem.setTitle(title);
+                boardItem.setTitle(updatedBoardItem.getTitle());
             } else {
-                boardItem.setUrl(url);
+                boardItem.setUrl(updatedBoardItem.getUrl());
             }
-            boardItem.setX(x);
-            boardItem.setY(y);
-            boardItem.setCreatedAt(boardItem.getCreatedAt());
-            boardItem.setUpdatedAt(new Date());
+            boardItem.setX(updatedBoardItem.getX());
+            boardItem.setY(updatedBoardItem.getY());
+            boardItem.setH(updatedBoardItem.getH());
+            boardItem.setW(updatedBoardItem.getW());
         }
-        return boardItem;
+
+        return this.boardItemRepository.save(boardItem);
     }
 }
