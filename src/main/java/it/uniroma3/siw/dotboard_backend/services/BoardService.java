@@ -2,11 +2,10 @@ package it.uniroma3.siw.dotboard_backend.services;
 
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.model.Board;
-import it.uniroma3.siw.dotboard_backend.model.BoardItem;
 import it.uniroma3.siw.dotboard_backend.model.Theme;
 import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
-import it.uniroma3.siw.dotboard_backend.utils.ItemType;
+import it.uniroma3.siw.dotboard_backend.services.security.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,10 @@ public class BoardService {
     @Autowired
     ApplicationUserRepository applicationUserRepository;
 
+    public boolean isAllowed (Board board, AuthenticatedUser user){
+        return board.getUser().getId().equals(user.getRequestUser().getId());
+    }
+
     public boolean isOwner(Principal principal, Board board){
         if(board.getUser().getUsername().equals(principal.getName())){
             return true;
@@ -38,6 +41,7 @@ public class BoardService {
         return this.boardRepository.findByIdAndDeletedAtIsNull(id);
     }
 
+    @Transactional
     public Board createBoard(Board board, ApplicationUser user){
         board.setUser(user);
         this.boardRepository.save(board);
@@ -62,6 +66,7 @@ public class BoardService {
         return this.boardRepository.save(board);
     }
 
+    @Transactional
     public void deleteBoard(Board board){
         board.setDeletedAt(new Date());
         board.getUser().getBoards().remove(board);
@@ -70,11 +75,20 @@ public class BoardService {
         this.boardRepository.save(board);
     }
 
+    @Transactional
     public Board addTheme(Board board, Theme theme){
         if(board.getTheme() != null)
             board.getTheme().getBoards().remove(board);
         board.setTheme(theme);
         theme.getBoards().add(board);
         return this.boardRepository.save(board);
+    }
+
+    @Transactional
+    public void removeThemeFromBoard(Board board){
+        if(board.getTheme() != null)
+            board.getTheme().getBoards().remove(board);
+        board.setTheme(null);
+        this.boardRepository.save(board);
     }
 }

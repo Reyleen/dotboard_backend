@@ -3,7 +3,6 @@ package it.uniroma3.siw.dotboard_backend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.uniroma3.siw.dotboard_backend.dto.BoardDTO;
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.model.Board;
 import it.uniroma3.siw.dotboard_backend.model.BoardItem;
@@ -34,9 +33,6 @@ public class BoardController implements Validator {
 
     @Autowired
     AuthenticatedUser authUser;
-
-    @Autowired
-    private ApplicationUserRepository applicationUserRepository;
 
     @Autowired
     private BoardRepository boardRepository;
@@ -86,20 +82,17 @@ public class BoardController implements Validator {
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id) {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
-        if (!board.getUser().getId().equals(authUser.getRequestUser().getId())) {
+        if (!this.boardService.isAllowed(board,authUser)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
         }
         this.boardService.deleteBoard(board);
-       /* board.setDeletedAt(new Date());
-        board.getTheme().getBoards().remove(board);
-        this.boardRepository.save(board);*/
     }
 
     @Operation(summary="Get all boardItems from a board")
     @RequestMapping(value="{id}/boardItems", method=RequestMethod.GET)
     public Iterable<BoardItem> getAllBoardItems(@PathVariable("id") Long id){
         	Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
-            if (!board.getUser().getId().equals(authUser.getRequestUser().getId())) {
+            if (!this.boardService.isAllowed(board,authUser)) {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
             }
             return board.getBoardItems();
@@ -109,6 +102,9 @@ public class BoardController implements Validator {
     @RequestMapping(value = "{id}/boardItems", method = RequestMethod.POST)
     public Board create(@PathVariable("id") Long id, @RequestBody BoardItem boardItem) {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
+        if (!this.boardService.isAllowed(board,authUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
+        }
         this.boardItemRepository.save(boardItem);
         board.getBoardItems().add(boardItem);
         boardItem.setBoard(board);
@@ -121,10 +117,20 @@ public class BoardController implements Validator {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         Theme theme = this.themeRepository.findByNameOrColorAndDeletedAtIsNull(name, name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
-        if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){
+        if(!this.boardService.isAllowed(board,authUser)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
         }
         return  this.boardService.addTheme(board, theme);
+    }
+
+    @Operation(summary = "Remove board's theme")
+    @RequestMapping(value = "{id}/theme", method = RequestMethod.DELETE)
+    public void removeThemeByBoardId(@PathVariable("id") Long id){
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
+        if(!boardService.isAllowed(board, authUser)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
+        }
+        boardService.removeThemeFromBoard(board);
     }
 
 }
