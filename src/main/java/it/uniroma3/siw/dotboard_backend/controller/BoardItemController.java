@@ -69,9 +69,11 @@ public class BoardItemController  implements Validator {
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public BoardItem update(@PathVariable("id") Long id, @RequestParam @Nullable String title,
                             @RequestParam @Nullable String subtitle,
-                            @RequestParam @Nullable String url, Principal principal) {
+                            @RequestParam @Nullable String url,
+                            @RequestParam Integer x, @RequestParam Integer y,
+                            Principal principal) {
 
-        BoardItem boardItem = this.boardItemService.update(id,title,subtitle,url,principal);
+        BoardItem boardItem = this.boardItemService.update(id,title,subtitle,url,x,y,principal);
         return this.boardItemRepository.save(boardItem);
     }
 }

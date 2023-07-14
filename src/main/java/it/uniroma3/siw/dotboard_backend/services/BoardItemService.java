@@ -75,7 +75,7 @@ public class BoardItemService {
     @Transactional
     public BoardItem update(Long id,@Nullable String title,
                             @Nullable String subtitle,
-                            @Nullable String url, Principal principal) {
+                            @Nullable String url,Integer x, Integer y, Principal principal) {
         BoardItem boardItem = this.getById(id);
         if (this.isOwner(principal, boardItem)) {
             if (boardItem.getCategory() == ItemType.TEXT) {
@@ -89,7 +89,8 @@ public class BoardItemService {
             } else {
                 boardItem.setUrl(url);
             }
-
+            boardItem.setX(x);
+            boardItem.setY(y);
             boardItem.setCreatedAt(boardItem.getCreatedAt());
             boardItem.setUpdatedAt(new Date());
         }
