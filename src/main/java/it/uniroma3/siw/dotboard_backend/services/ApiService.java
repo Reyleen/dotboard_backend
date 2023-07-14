@@ -33,15 +33,12 @@ public class ApiService {
     }
 
     @Transactional
-    public void delete(@PathVariable("id") Long id) {
+    public Api delete(@PathVariable("id") Long id) {
         Api api = this.getById(id);
-        if (api == null) {
-            return;
-        }
         for(BoardItem b : api.getBoarditems()) {
             b.setApi(null);
         }
         api.setDeletedAt(new Date());
-        this.apiRepository.save(api);
+        return api;
     }
 }

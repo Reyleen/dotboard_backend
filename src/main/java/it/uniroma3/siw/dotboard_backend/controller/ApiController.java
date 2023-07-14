@@ -23,6 +23,7 @@ public class ApiController implements Validator {
     @Autowired
     private ApiService apiService;
 
+    @Autowired ApiRepository apiRepository;
 
     // GET all boardItems
     @Operation(summary = "Get all APIs of the system")
@@ -48,8 +49,9 @@ public class ApiController implements Validator {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete an API")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable("id") Long id) {
-        this.apiService.delete(id);
+    public Api delete(@PathVariable("id") Long id) {
+        Api api = this.apiService.delete(id);
+        return this.apiRepository.save(api);
     }
 
 }
