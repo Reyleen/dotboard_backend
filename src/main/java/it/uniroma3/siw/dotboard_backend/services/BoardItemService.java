@@ -3,15 +3,11 @@ package it.uniroma3.siw.dotboard_backend.services;
 import it.uniroma3.siw.dotboard_backend.repository.ApiRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
 import it.uniroma3.siw.dotboard_backend.utils.ItemType;
-import org.h2.engine.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import it.uniroma3.siw.dotboard_backend.model.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
@@ -40,13 +36,13 @@ public class BoardItemService {
     }
 
     @Transactional
-    public BoardItem delete(Long id, Principal principal){
+    public void delete(Long id, Principal principal){
         BoardItem boardItem = this.getById(id);
         if(this.isOwner(principal, boardItem)){
         boardItem.getBoard().getBoardItems().remove(boardItem);
         boardItem.setDeletedAt(new Date());
         }
-        return boardItem;
+        this.boardItemRepository.save(boardItem);
     }
 
     @Transactional
@@ -69,7 +65,7 @@ public class BoardItemService {
                 boardItem.setApi(api);
             }
         }
-        return boardItem;
+        return boardItemRepository.save(boardItem);
     }
 
     @Transactional

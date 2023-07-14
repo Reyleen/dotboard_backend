@@ -1,26 +1,18 @@
 package it.uniroma3.siw.dotboard_backend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.uniroma3.siw.dotboard_backend.model.Api;
 import it.uniroma3.siw.dotboard_backend.model.*;
-import it.uniroma3.siw.dotboard_backend.repository.ApiRepository;
 import it.uniroma3.siw.dotboard_backend.services.BoardItemService;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
-import it.uniroma3.siw.dotboard_backend.utils.ItemType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.lang.Nullable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
-import java.util.Date;
+
 
 @RestController
 @RequestMapping("/api/boardItems")
@@ -29,13 +21,7 @@ import java.util.Date;
 public class BoardItemController  implements Validator {
 
     @Autowired
-    private BoardItemRepository boardItemRepository;
-
-    @Autowired
     private BoardItemService boardItemService;
-
-    @Autowired
-    private ApiRepository apiRepository;
 
     @Operation(summary = "Get boardItem by id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
@@ -47,8 +33,7 @@ public class BoardItemController  implements Validator {
     @Operation(summary = "Delete a boardItem")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id, Principal principal) {
-        BoardItem boardItem = this.boardItemService.delete(id, principal);
-        this.boardItemRepository.save(boardItem);
+        this.boardItemService.delete(id, principal);
     }
 
     @Operation(summary = "Get API from a boardItem id")
@@ -62,8 +47,7 @@ public class BoardItemController  implements Validator {
     public BoardItem setAPI(@PathVariable("itemId") Long itemId,
                             @PathVariable("apiId") Long apiId,
                             Principal principal) {
-        BoardItem boardItem = this.boardItemService.setApi(itemId,apiId,principal);
-        return this.boardItemRepository.save(boardItem);
+        return this.boardItemService.setApi(itemId,apiId,principal);
     }
 
     @Operation(summary = "Update a boardItem")
