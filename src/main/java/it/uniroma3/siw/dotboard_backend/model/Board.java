@@ -45,10 +45,10 @@ public class Board {
     private String publicLink;
 
     @Nullable
-    private Integer height;
+    private Integer h;
 
     @Nullable
-    private Integer width;
+    private Integer w;
 
     @JsonIgnore
     @OneToOne
@@ -70,6 +70,7 @@ public class Board {
     public Board(){
         boardItems = new ArrayList<>();
     }
+
 
     public ApplicationUser getUser() {
         return user;
@@ -164,21 +165,21 @@ public class Board {
     }
 
     @Nullable
-    public Integer getHeight() {
-        return height;
+    public Integer getH() {
+        return h;
     }
 
-    public void setHeight(@Nullable Integer height) {
-        this.height = height;
+    public void setH(@Nullable Integer height) {
+        this.h = height;
     }
 
     @Nullable
-    public Integer getWidth() {
-        return width;
+    public Integer getW() {
+        return w;
     }
 
-    public void setWidth(@Nullable Integer width) {
-        this.width = width;
+    public void setW(@Nullable Integer width) {
+        this.w = width;
     }
 
     public List<BoardItem> getBoardItems() {

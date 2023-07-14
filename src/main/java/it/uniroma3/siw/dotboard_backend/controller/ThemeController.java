@@ -44,8 +44,7 @@ public class ThemeController  implements Validator {
     @Operation(summary = "Get board's theme")
     @RequestMapping(value = "{id}/theme", method = RequestMethod.GET)
     public Theme getThemeByBoardId(@PathVariable("id") Long id){
-        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
 
         if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
@@ -56,8 +55,7 @@ public class ThemeController  implements Validator {
     @Operation(summary = "Remove board's theme")
     @RequestMapping(value = "{id}/theme", method = RequestMethod.DELETE)
     public void removeThemeByBoardId(@PathVariable("id") Long id){
-        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not found"));
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
         }
