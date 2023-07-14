@@ -7,6 +7,8 @@ import it.uniroma3.siw.dotboard_backend.model.Board;
 import it.uniroma3.siw.dotboard_backend.model.Theme;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
 import it.uniroma3.siw.dotboard_backend.repository.ThemeRepository;
+import it.uniroma3.siw.dotboard_backend.services.BoardService;
+import it.uniroma3.siw.dotboard_backend.services.ThemeService;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import it.uniroma3.siw.dotboard_backend.services.security.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
 
 @RestController
 @RequestMapping("/api/themes")
@@ -35,6 +36,12 @@ public class ThemeController  implements Validator {
     @Autowired
     AuthenticatedUser authUser;
 
+    @Autowired
+    private BoardService boardService;
+
+    @Autowired
+    private ThemeService themeService;
+
     @Operation(summary = "Get all themes")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Iterable<Theme> getAll() {
@@ -46,24 +53,10 @@ public class ThemeController  implements Validator {
     public Theme getThemeByBoardId(@PathVariable("id") Long id){
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
 
-        if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){
+        if(!boardService.isAllowed(board, authUser)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
         }
         return board.getTheme();
-    }
-
-    @Operation(summary = "Remove board's theme")
-    @RequestMapping(value = "{id}/theme", method = RequestMethod.DELETE)
-    public void removeThemeByBoardId(@PathVariable("id") Long id){
-        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
-        if(!board.getUser().getId().equals(authUser.getRequestUser().getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-        }
-        if(board.getTheme()!=null){
-            board.getTheme().getBoards().remove(board);
-        }
-            board.setTheme(null);
-        this.boardRepository.save(board);
     }
 
     @Operation(summary = "Get theme by name/color")
@@ -73,18 +66,11 @@ public class ThemeController  implements Validator {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
     }
 
-    /*@Operation(summary = "Get theme by color")
-    @RequestMapping(value = "{color}", method = RequestMethod.GET)
-    public Theme getByColor(@PathVariable("color") String color) {
-        return this.themeRepository.findByNameOrColorAndDeletedAtIsNull(null, color)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
-    }*/
-
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create a theme")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Theme create(Theme theme) {
-        return this.themeRepository.save(theme);
+        return this.themeService.createTheme(theme);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -93,9 +79,7 @@ public class ThemeController  implements Validator {
     public void delete(@PathVariable("id") Long id) {
         Theme theme = this.themeRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
-        theme.getBoards().forEach(board -> board.setTheme(null));
-        theme.setDeletedAt(new Date());
-        this.themeRepository.save(theme);
+        this.themeService.deleteTheme(theme);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
