@@ -61,6 +61,7 @@ public class BoardService {
             board.setY(updatedBoard.getY());
             board.setH(updatedBoard.getH());
             board.setW(updatedBoard.getW());
+            board.setPublicLink(updatedBoard.getPublicLink());
         }
 
         return this.boardRepository.save(board);

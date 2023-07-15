@@ -54,6 +54,26 @@ public class BoardController implements Validator {
         return board;
     }
 
+    //Get board se publica
+    @Operation(summary = "Get board by id if  board is public")
+    @RequestMapping(value = "{id}/public", method = RequestMethod.GET)
+    public Board getByIdPublic(@PathVariable("id") Long id) {
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
+        if(!board.isPublic())
+            	throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not public");
+        return board;
+    }
+
+    @Operation(summary="Get all boardItems from a board if board is public")
+    @RequestMapping(value="{id}/public/boardItems", method=RequestMethod.GET)
+    public Iterable<BoardItem> getAllBoardItemsPublic(@PathVariable("id") Long id){
+        Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
+        if(!board.isPublic())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not public");
+        return board.getBoardItems();
+    }
+
+    //Get boardItems if board is public
     @Operation(summary = "Create a new board")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Board create(@RequestBody Board board) {
