@@ -5,5 +5,6 @@ public enum ItemType {
     IMAGE,
     WEATHER,
     BUTTON,
+    IFRAME,
     API,
 }

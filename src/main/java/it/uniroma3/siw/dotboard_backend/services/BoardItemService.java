@@ -82,7 +82,7 @@ public class BoardItemService {
             if (boardItem.getCategory() == ItemType.TEXT) {
                 boardItem.setTitle(updatedBoardItem.getTitle());
                 boardItem.setSubtitle(updatedBoardItem.getSubtitle());
-            } else if (boardItem.getCategory() == ItemType.IMAGE) {
+            } else if (boardItem.getCategory() == ItemType.IMAGE || boardItem.getCategory() == ItemType.IFRAME) {
                 boardItem.setTitle(updatedBoardItem.getTitle());
                 boardItem.setUrl(updatedBoardItem.getUrl());
             } else if (boardItem.getCategory() == ItemType.WEATHER) {
