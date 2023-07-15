@@ -22,7 +22,6 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/boards")
-@SecurityRequirement(name = "Bearer_JWT")
 @Tag(name = "Board", description = "The Board API. Contains all the operations that can be performed on a board.")
 public class BoardController implements Validator {
 
@@ -39,6 +38,7 @@ public class BoardController implements Validator {
     private BoardService boardService;
 
     // GET /boards
+    @SecurityRequirement(name = "Bearer_JWT")
     @Operation(summary = "Get all boards of authenticated user")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Iterable<Board> getAll() {
@@ -46,6 +46,7 @@ public class BoardController implements Validator {
     }
 
     // GET /boards/{id}
+    @SecurityRequirement(name = "Bearer_JWT")
     @Operation(summary = "Get board by id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Board getById(@PathVariable("id") Long id, Principal principal) {
@@ -55,25 +56,27 @@ public class BoardController implements Validator {
     }
 
     //Get board se publica
+
     @Operation(summary = "Get board by id if  board is public")
     @RequestMapping(value = "{id}/public", method = RequestMethod.GET)
     public Board getByIdPublic(@PathVariable("id") Long id) {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         if(!board.isPublic())
-            	throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not public");
+            	throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not public");
         return board;
     }
 
+    //Get boardItems if board is public
     @Operation(summary="Get all boardItems from a board if board is public")
     @RequestMapping(value="{id}/public/boardItems", method=RequestMethod.GET)
     public Iterable<BoardItem> getAllBoardItemsPublic(@PathVariable("id") Long id){
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         if(!board.isPublic())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Board not public");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not public");
         return board.getBoardItems();
     }
 
-    //Get boardItems if board is public
+    @SecurityRequirement(name = "Bearer_JWT")
     @Operation(summary = "Create a new board")
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Board create(@RequestBody Board board) {
@@ -82,12 +85,14 @@ public class BoardController implements Validator {
     }
 
     //Da scegliere cosa modificare, se descrizione/nome/ecc. o la parte delle boarditems
+    @SecurityRequirement(name = "Bearer_JWT")
     @Operation(summary = "Update a board")
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Board update(@PathVariable("id") Long id, @RequestBody Board updatedBoard, Principal principal) {
         return this.boardService.update(id, updatedBoard, principal);
     }
 
+    @SecurityRequirement(name = "Bearer_JWT")
     @Operation(summary = "Delete a board")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("id") Long id, Principal principal) {
@@ -96,6 +101,7 @@ public class BoardController implements Validator {
         this.boardService.deleteBoard(board);
     }
 
+    @SecurityRequirement(name = "Bearer_JWT")
     @Operation(summary="Get all boardItems from a board")
     @RequestMapping(value="{id}/boardItems", method=RequestMethod.GET)
     public Iterable<BoardItem> getAllBoardItems(@PathVariable("id") Long id, Principal principal){
@@ -104,6 +110,7 @@ public class BoardController implements Validator {
             return board.getBoardItems();
     }
 
+    @SecurityRequirement(name = "Bearer_JWT")
     @Operation(summary = "Create a new boardItem in the current Board")
     @RequestMapping(value = "{id}/boardItems", method = RequestMethod.POST)
     public Board create(@PathVariable("id") Long id, @RequestBody BoardItem boardItem, Principal principal){
@@ -112,6 +119,7 @@ public class BoardController implements Validator {
         return this.boardService.createItemToBoard(board, boardItem);
     }
 
+    @SecurityRequirement(name = "Bearer_JWT")
     @Operation(summary = "Add a theme by name/color to a board")
     @RequestMapping(value = "{id}/addThemeToBoard/{colorOrName}", method = RequestMethod.PUT)
     public Board addThemeToBoard(@PathVariable("id") Long id, @PathVariable("colorOrName") String name, Principal principal) {
@@ -122,6 +130,7 @@ public class BoardController implements Validator {
         return  this.boardService.addTheme(board, theme);
     }
 
+    @SecurityRequirement(name = "Bearer_JWT")
     @Operation(summary = "Remove board's theme")
     @RequestMapping(value = "{id}/theme", method = RequestMethod.DELETE)
     public void removeThemeByBoardId(@PathVariable("id") Long id, Principal principal){
