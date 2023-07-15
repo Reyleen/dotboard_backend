@@ -65,7 +65,7 @@ public class BoardController implements Validator {
     }
 
     @Operation(summary="Get all boardItems from a board if board is public")
-    @RequestMapping(value="{id}/boardItems", method=RequestMethod.GET)
+    @RequestMapping(value="{id}/public/boardItems", method=RequestMethod.GET)
     public Iterable<BoardItem> getAllBoardItemsPublic(@PathVariable("id") Long id){
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         if(!board.isPublic())
