@@ -7,14 +7,11 @@ import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.model.Board;
 import it.uniroma3.siw.dotboard_backend.model.BoardItem;
 import it.uniroma3.siw.dotboard_backend.model.Theme;
-import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
-import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
 import it.uniroma3.siw.dotboard_backend.repository.ThemeRepository;
 import it.uniroma3.siw.dotboard_backend.services.BoardService;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import it.uniroma3.siw.dotboard_backend.services.security.AuthenticatedUser;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,16 +26,11 @@ import java.security.Principal;
 @Tag(name = "Board", description = "The Board API. Contains all the operations that can be performed on a board.")
 public class BoardController implements Validator {
 
-    ModelMapper modelMapper = new ModelMapper();
-
     @Autowired
     AuthenticatedUser authUser;
 
     @Autowired
     private BoardRepository boardRepository;
-
-    @Autowired
-    private BoardItemRepository boardItemRepository;
 
     @Autowired
     private ThemeRepository themeRepository;
@@ -56,11 +48,9 @@ public class BoardController implements Validator {
     // GET /boards/{id}
     @Operation(summary = "Get board by id")
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public Board getById(@PathVariable("id") Long id) {
+    public Board getById(@PathVariable("id") Long id, Principal principal) {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
-        if (!board.getUser().getId().equals(authUser.getRequestUser().getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-        }
+        boardService.isOwner(principal, board);
         return board;
     }
 
@@ -80,56 +70,43 @@ public class BoardController implements Validator {
 
     @Operation(summary = "Delete a board")
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id, Principal principal) {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
-        if (!this.boardService.isAllowed(board,authUser)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-        }
+        this.boardService.isOwner(principal, board);
         this.boardService.deleteBoard(board);
     }
 
     @Operation(summary="Get all boardItems from a board")
     @RequestMapping(value="{id}/boardItems", method=RequestMethod.GET)
-    public Iterable<BoardItem> getAllBoardItems(@PathVariable("id") Long id){
+    public Iterable<BoardItem> getAllBoardItems(@PathVariable("id") Long id, Principal principal){
         	Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
-            if (!this.boardService.isAllowed(board,authUser)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-            }
+            this.boardService.isOwner(principal, board);
             return board.getBoardItems();
     }
 
     @Operation(summary = "Create a new boardItem in the current Board")
     @RequestMapping(value = "{id}/boardItems", method = RequestMethod.POST)
-    public Board create(@PathVariable("id") Long id, @RequestBody BoardItem boardItem) {
+    public Board create(@PathVariable("id") Long id, @RequestBody BoardItem boardItem, Principal principal){
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
-        if (!this.boardService.isAllowed(board,authUser)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-        }
-        this.boardItemRepository.save(boardItem);
-        board.getBoardItems().add(boardItem);
-        boardItem.setBoard(board);
-        return this.boardRepository.save(board);
+        this.boardService.isOwner(principal, board);
+        return this.boardService.createItemToBoard(board, boardItem);
     }
 
     @Operation(summary = "Add a theme by name/color to a board")
     @RequestMapping(value = "{id}/addThemeToBoard/{colorOrName}", method = RequestMethod.PUT)
-    public Board addThemeToBoard(@PathVariable("id") Long id, @PathVariable("colorOrName") String name) {
+    public Board addThemeToBoard(@PathVariable("id") Long id, @PathVariable("colorOrName") String name, Principal principal) {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         Theme theme = this.themeRepository.findByNameOrColorAndDeletedAtIsNull(name, name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Theme not found"));
-        if(!this.boardService.isAllowed(board,authUser)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-        }
+        this.boardService.isOwner(principal, board);
         return  this.boardService.addTheme(board, theme);
     }
 
     @Operation(summary = "Remove board's theme")
     @RequestMapping(value = "{id}/theme", method = RequestMethod.DELETE)
-    public void removeThemeByBoardId(@PathVariable("id") Long id){
+    public void removeThemeByBoardId(@PathVariable("id") Long id, Principal principal){
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
-        if(!boardService.isAllowed(board, authUser)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-        }
+        this.boardService.isOwner(principal, board);
         boardService.removeThemeFromBoard(board);
     }
 

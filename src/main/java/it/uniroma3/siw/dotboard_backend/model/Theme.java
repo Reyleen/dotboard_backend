@@ -7,7 +7,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import javax.validation.constraints.Null;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;

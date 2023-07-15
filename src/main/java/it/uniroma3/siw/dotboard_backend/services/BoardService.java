@@ -2,10 +2,11 @@ package it.uniroma3.siw.dotboard_backend.services;
 
 import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
 import it.uniroma3.siw.dotboard_backend.model.Board;
+import it.uniroma3.siw.dotboard_backend.model.BoardItem;
 import it.uniroma3.siw.dotboard_backend.model.Theme;
 import it.uniroma3.siw.dotboard_backend.repository.ApplicationUserRepository;
+import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
-import it.uniroma3.siw.dotboard_backend.services.security.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,8 @@ public class BoardService {
     @Autowired
     ApplicationUserRepository applicationUserRepository;
 
-    public boolean isAllowed (Board board, AuthenticatedUser user){
-        return board.getUser().getId().equals(user.getRequestUser().getId());
-    }
+    @Autowired
+    BoardItemRepository boardItemRepository;
 
     public boolean isOwner(Principal principal, Board board){
         if(board.getUser().getUsername().equals(principal.getName())){
@@ -90,5 +90,13 @@ public class BoardService {
             board.getTheme().getBoards().remove(board);
         board.setTheme(null);
         this.boardRepository.save(board);
+    }
+
+    @Transactional
+    public Board createItemToBoard(Board board, BoardItem boardItem){
+       boardItemRepository.save(boardItem);
+       board.getBoardItems().add(boardItem);
+       boardItem.setBoard(board);
+         return this.boardRepository.save(board);
     }
 }
