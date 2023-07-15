@@ -11,7 +11,6 @@ public interface ApiRepository extends JpaRepository<Api, Long> {
 
     Api findByIdAndDeletedAtIsNull(Long id);
 
-    List<Api> findAll();
 
-    Optional<Api> findById(Long id);
+    List<Api> findAllByDeletedAtIsNull();
 }

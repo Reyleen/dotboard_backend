@@ -57,13 +57,14 @@ public class BoardItemService {
     @Transactional
     public BoardItem setApi(Long itemId, Long apiId,Principal principal){
         BoardItem boardItem = this.getById(itemId);
-        Api api = this.apiRepository.findById(apiId).orElse(null);
+        Api api = this.apiRepository.findByIdAndDeletedAtIsNull(apiId);
         if(this.isOwner(principal, boardItem)) {
-            if (api == null) {
-                return null;
-            } else {
-                boardItem.setApi(api);
+            if(boardItem.getApi() != null){
+                boardItem.getApi().getBoarditems().remove(boardItem);
+                boardItem.setApi(null);
             }
+            boardItem.setApi(api);
+            api.getBoarditems().add(boardItem);
         }
         return boardItemRepository.save(boardItem);
     }

@@ -3,6 +3,7 @@ package it.uniroma3.siw.dotboard_backend.services;
 import it.uniroma3.siw.dotboard_backend.model.Api;
 import it.uniroma3.siw.dotboard_backend.model.BoardItem;
 import it.uniroma3.siw.dotboard_backend.repository.ApiRepository;
+import it.uniroma3.siw.dotboard_backend.repository.BoardItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ApiService {
@@ -17,9 +19,12 @@ public class ApiService {
     @Autowired
     private ApiRepository apiRepository;
 
+    @Autowired
+    private BoardItemRepository boardItemRepository;
+
     @Transactional
-    public Iterable<Api> getAll() {
-        return this.apiRepository.findAll();
+    public List<Api> getAll() {
+        return this.apiRepository.findAllByDeletedAtIsNull();
     }
 
     @Transactional
@@ -37,7 +42,9 @@ public class ApiService {
         Api api = this.getById(id);
         for(BoardItem b : api.getBoarditems()) {
             b.setApi(null);
+            this.boardItemRepository.save(b);
         }
+        api.setBoarditems(null);
         api.setDeletedAt(new Date());
         return api;
     }
