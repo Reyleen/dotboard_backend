@@ -38,8 +38,14 @@ public class BoardItemService {
     @Transactional
     public void delete(Long id, Principal principal){
         BoardItem boardItem = this.getById(id);
+        if(boardItem == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "BoardItem not found");
+        }
         if(this.isOwner(principal, boardItem)){
         boardItem.getBoard().getBoardItems().remove(boardItem);
+        if(boardItem.getApi() != null) {
+            boardItem.getApi().getBoarditems().remove(boardItem);
+        }
         boardItem.setDeletedAt(new Date());
         }
         this.boardItemRepository.save(boardItem);
