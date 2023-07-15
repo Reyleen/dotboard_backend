@@ -30,7 +30,6 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
 
   default ApplicationUser create(ApplicationUser applicationUser) throws IllegalAccessException {
 
-
     // Check if user already exists
     ApplicationUser user = this.findByEmailAndDeletedAtIsNull(applicationUser.getEmail()).orElse(null);
     if (user != null) {

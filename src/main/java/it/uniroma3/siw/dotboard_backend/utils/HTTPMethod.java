@@ -9,5 +9,5 @@ public enum HTTPMethod {
   CONNECT,
   OPTIONS,
   TRACE,
-  PATCH;
+  PATCH
 }

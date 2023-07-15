@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
+
 
 @RestController
 @RequestMapping("/api/themes")
@@ -50,12 +52,9 @@ public class ThemeController  implements Validator {
 
     @Operation(summary = "Get board's theme")
     @RequestMapping(value = "{id}/theme", method = RequestMethod.GET)
-    public Theme getThemeByBoardId(@PathVariable("id") Long id){
+    public Theme getThemeByBoardId(@PathVariable("id") Long id, Principal principal){
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
-
-        if(!boardService.isAllowed(board, authUser)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not owned by user");
-        }
+        this.boardService.isOwner(principal, board);
         return board.getTheme();
     }
 
