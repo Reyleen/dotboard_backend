@@ -40,6 +40,7 @@ public class Api {
     @JsonIgnore
     private Date deletedAt;
 
+    private String name;
     private String url;
 
     private HTTPMethod method;
@@ -50,6 +51,14 @@ public class Api {
 
     public Api(){
         boarditems = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<BoardItem> getBoarditems() {

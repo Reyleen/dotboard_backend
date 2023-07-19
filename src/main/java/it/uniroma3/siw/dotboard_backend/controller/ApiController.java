@@ -4,12 +4,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.uniroma3.siw.dotboard_backend.model.Api;
+import it.uniroma3.siw.dotboard_backend.model.BoardItem;
 import it.uniroma3.siw.dotboard_backend.repository.ApiRepository;
 import it.uniroma3.siw.dotboard_backend.services.ApiService;
 import it.uniroma3.siw.dotboard_backend.services.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/apis")
@@ -49,6 +52,13 @@ public class ApiController implements Validator {
     public Api delete(@PathVariable("id") Long id) {
         Api api = this.apiService.delete(id);
         return this.apiRepository.save(api);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update an API")
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    public Api update(@PathVariable("id") Long id, @RequestBody Api updatedApi) {
+        return this.apiService.update(id,updatedApi);
     }
 
 }
