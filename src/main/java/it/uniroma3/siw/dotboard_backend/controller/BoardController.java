@@ -3,10 +3,7 @@ package it.uniroma3.siw.dotboard_backend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import it.uniroma3.siw.dotboard_backend.model.ApplicationUser;
-import it.uniroma3.siw.dotboard_backend.model.Board;
-import it.uniroma3.siw.dotboard_backend.model.BoardItem;
-import it.uniroma3.siw.dotboard_backend.model.Theme;
+import it.uniroma3.siw.dotboard_backend.model.*;
 import it.uniroma3.siw.dotboard_backend.repository.BoardRepository;
 import it.uniroma3.siw.dotboard_backend.repository.ThemeRepository;
 import it.uniroma3.siw.dotboard_backend.services.BoardService;
@@ -14,6 +11,7 @@ import it.uniroma3.siw.dotboard_backend.services.Validator;
 import it.uniroma3.siw.dotboard_backend.services.security.AuthenticatedUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -59,11 +57,13 @@ public class BoardController implements Validator {
 
     @Operation(summary = "Get board by id if  board is public")
     @RequestMapping(value = "{id}/public", method = RequestMethod.GET)
-    public Board getByIdPublic(@PathVariable("id") Long id) {
+    public ResponseEntity<BoardResponse> getByIdPublic(@PathVariable("id") Long id) {
         Board board = this.boardRepository.findByIdAndDeletedAtIsNull(id);
         if(!board.isPublic())
             	throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Board not public");
-        return board;
+        String username = board.getUser().getUsername();
+        BoardResponse boardResponse = new BoardResponse(board, username);
+        return ResponseEntity.ok(boardResponse);
     }
 
     //Get boardItems if board is public
