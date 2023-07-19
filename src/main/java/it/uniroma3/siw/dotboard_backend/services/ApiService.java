@@ -56,6 +56,7 @@ public class ApiService {
         Api api = this.getById(id);
         api.setName(updatedApi.getName());
         api.setUrl(updatedApi.getUrl());
+        api.setMethod(updatedApi.getMethod());
         return this.apiRepository.save(api);
     }
 }
