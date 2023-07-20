@@ -1,6 +1,7 @@
 Dotboard_backend
 ---
 Progetto di gruppo - Collaboratori : Dela Reyna Chellee Mae, Gaudino Francesco, Napoleone Marco.
+
 Abbiamo utilizzato il servizio di [AWS](https://docs.aws.amazon.com/ec2/index.html?nc2=h_ql_doc_ec2) per il deploy
 
 Casi d'uso
