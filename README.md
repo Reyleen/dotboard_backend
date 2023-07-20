@@ -48,7 +48,7 @@ Casi d'uso
 7a. L'utente annulla ed il sistema non registra le modifiche
 8. Il sistema mostra la board appena modificata
 
-**UC5: Eliminazione di una board - Attore Primario: Utente Registrato**
+**UC5: Rimozione di una board - Attore Primario: Utente Registrato**
 1. L'utente fa l'autenticazione
 2. Il sistema mostra la homepage con le sue board
 3. L'utente seleziona la board che vuole eliminare
@@ -56,7 +56,7 @@ Casi d'uso
 5. L'utente seleziona l'operazione "Elimina"
 6. Il sistema mostra le board appartenenti all'utente
 
-**UC6: Eliminazione di una boardItem - Attore Primario: Utente Registrato**
+**UC6: Rimozione di una boardItem - Attore Primario: Utente Registrato**
 1. L'utente fa l'autenticazione
 2. Il sistema mostra la homepage con le sue board
 3. L'utente seleziona la board che vuole modificare
@@ -84,3 +84,33 @@ Casi d'uso
 2a. Se la board è pubblica, basta mettere il link della board pubblica
 3. L'utente seleziona la board che vuole visualizzare
 4. Il sistema mostra la board
+
+**UC9: Aggiunta di una API - Attore Primario: Amministratore**
+1. L'amministratore fa l'autenticazione
+2. Il sistema mostra la homepage
+3. L'amministratore sceglie l'operazione "API"
+4. Il sistema mostra le API registrate
+5. L'amministratore sceglie l'operazione "Aggiungi"
+6. L'amministratore inserisce le informazioni
+7. L'amministratore conferma
+7a. Se l'amministratore annulla, il sistema non registra le modifiche
+8. Il sistema mostra le API presenti
+
+**UC10: Modifica di una API - Attore Primario: Amministratore**
+1. L'amministratore fa l'autenticazione
+2. Il sistema mostra la homepage
+3. L'amministratore sceglie l'operazione "API"
+4. Il sistema mostra le API registrate
+5. L'amministratore sceglie l'API da modificare e sceglie l'operazione "Modifica"
+6. L'amministratore inserisce le informazioni
+7. L'amministratore conferma
+7a. Se l'amministratore annulla, il sistema non registra le modifiche
+8. Il sistema mostra le API presenti
+
+**UC12: Rimozione di una Api - Attore Primario: Amministratore**
+1. L'amministratore fa l'autenticazione
+2. Il sistema mostra la homepage
+3. L'amministratore sceglie l'operazione "API"
+4. Il sistema mostra le API registrate
+5. L'amministratore sceglie l'API e l'operazione "Elimina"
+6. Il sistema mostra le API presenti
